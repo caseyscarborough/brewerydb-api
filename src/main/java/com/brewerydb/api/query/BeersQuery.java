@@ -4,9 +4,6 @@ import com.brewerydb.api.model.Status;
 import com.brewerydb.api.query.fields.BeerFields;
 import com.brewerydb.api.query.order.BeerOrder;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class BeersQuery extends AbstractQuery {
 
     private BeersQuery() {
@@ -18,14 +15,11 @@ public class BeersQuery extends AbstractQuery {
 
     public static class Builder extends MultipleResultQueryBuilder<BeersQuery, Builder> {
 
-        private Map<String, String> params = new HashMap<String, String>();
-
         private Builder() {
         }
 
         public Builder withAbv(String abv) {
             params.put(BeerFields.ABV, abv);
-            ;
             return this;
         }
 

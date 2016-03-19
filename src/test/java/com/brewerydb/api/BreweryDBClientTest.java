@@ -8,6 +8,7 @@ import com.brewerydb.api.query.BreweriesQuery;
 import com.brewerydb.api.result.BeerResult;
 import com.brewerydb.api.result.BeersResult;
 import com.brewerydb.api.result.BreweriesResult;
+import com.brewerydb.api.result.BreweryResult;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetBeers() throws Exception {
-        BeersQuery query = BeersQuery.builder().withName("Newcastle").build();
+        BeersQuery query = BeersQuery.builder().withName("Newcastle Brown Ale").build();
         BeersResult result = client.getBeers(query);
 
         assertTrue(result.wasSuccessful());
@@ -68,8 +69,17 @@ public class BreweryDBClientTest {
     }
 
     @Test
+    public void testGetBeerSimple() throws Exception {
+        BeerResult result = client.getBeer("7ET5OY");
+
+        assertTrue(result.wasSuccessful());
+        assertEquals("Newcastle Brown Ale", result.getData().getName());
+        assertEquals("English Brown", result.getData().getStyle().getShortName());
+    }
+
+    @Test
     public void testGetBeerWithValidId() throws Exception {
-        BeerResult result = client.getBeer("jUYZMk", BeerQuery.builder().withBreweries().build());
+        BeerResult result = client.getBeer("7ET5OY", BeerQuery.builder().withBreweries().build());
 
         assertTrue(result.wasSuccessful());
         assertEquals("Newcastle Brown Ale", result.getData().getName());
@@ -92,5 +102,13 @@ public class BreweryDBClientTest {
         assertTrue(result.wasSuccessful());
         assertEquals(1, result.getData().size());
         assertEquals("SweetWater Brewing Company", result.getData().get(0).getName());
+    }
+
+    @Test
+    public void testGetBrewerySimple() throws Exception {
+        BreweryResult result = client.getBrewery("TMc6H2");
+
+        assertTrue(result.wasSuccessful());
+        assertEquals("SweetWater Brewing Company", result.getData().getName());
     }
 }

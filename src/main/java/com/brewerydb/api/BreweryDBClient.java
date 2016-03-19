@@ -9,6 +9,7 @@ import com.brewerydb.api.result.BeerResult;
 import com.brewerydb.api.result.BeersResult;
 import com.brewerydb.api.result.BreweriesResult;
 import com.brewerydb.api.query.BreweriesQuery;
+import com.brewerydb.api.result.BreweryResult;
 import com.google.gson.Gson;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
@@ -49,15 +50,21 @@ public class BreweryDBClient {
         return get(Configuration.BREWERIES_ENDPOINT, query, BreweriesResult.class);
     }
 
+    public BreweryResult getBrewery(String id) {
+        return get(Configuration.BREWERY_ENDPOINT + "/" + id, null, BreweryResult.class);
+    }
+
     private <T> T get(final String endpoint, final Query query, final Class<T> clazz) {
         LOGGER.debug("Performing GET request to endpoint " + endpoint);
         AsyncHttpClient client = new AsyncHttpClient();
         AsyncHttpClient.BoundRequestBuilder builder = client.prepareGet(endpoint);
         builder.addQueryParam("key", apiKey);
-        for (String key : query.getParams().keySet()) {
-            String value = query.getParams().get(key);
-            LOGGER.debug("Adding parameter: " + key + "=" + value);
-            builder.addQueryParam(key, value);
+        if (query != null) {
+            for (String key : query.getParams().keySet()) {
+                String value = query.getParams().get(key);
+                LOGGER.debug("Adding parameter: " + key + "=" + value);
+                builder.addQueryParam(key, value);
+            }
         }
 
         final long start = System.currentTimeMillis();
