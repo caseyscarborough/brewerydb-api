@@ -1,5 +1,7 @@
 package com.brewerydb.api.model;
 
+import java.util.List;
+
 public class Brewery {
 
     private String id;
@@ -13,6 +15,7 @@ public class Brewery {
     private String createDate;
     private String updateDate;
     private BreweryImages images;
+    private List<Location> locations;
 
     public String getId() {
         return id;
@@ -110,6 +113,15 @@ public class Brewery {
 
     public Brewery withImages(BreweryImages images) {
         this.images = images;
+        return this;
+    }
+
+    public List<Location> getLocations() {
+        return locations;
+    }
+
+    public Brewery withLocations(List<Location> locations) {
+        this.locations = locations;
         return this;
     }
 }
