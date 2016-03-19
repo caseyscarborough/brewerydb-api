@@ -10,3 +10,5 @@
 /build
 *.class
 *.jar
+
+src/test/resources/test.properties
