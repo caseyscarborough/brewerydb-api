@@ -44,7 +44,7 @@ public class BeersQuery extends AbstractQuery {
             return this;
         }
 
-        public Builder withAvailabileId(Integer availabilityId) {
+        public Builder withAvailableId(Integer availabilityId) {
             params.put(BeerFields.AVAILABLE_ID, availabilityId.toString());
             return this;
         }
