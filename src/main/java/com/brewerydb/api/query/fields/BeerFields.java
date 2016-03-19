@@ -1,6 +1,6 @@
-package com.brewerydb.api.query.params;
+package com.brewerydb.api.query.fields;
 
-public class BeerParams {
+public class BeerFields {
 
     public static final String PAGE_NUMBER = "p";
     public static final String IDS = "ids";
@@ -22,4 +22,8 @@ public class BeerParams {
     public static final String WITH_BREWERIES = "withBreweries";
     public static final String WITH_SOCIAL_ACCOUNTS = "withSocialAccounts";
     public static final String WITH_INGREDIENTS = "withIngredients";
+    public static final String DESCRIPTION = "description";
+    public static final String CREATE_DATE = "createDate";
+    public static final String UPDATE_DATE = "updateDate";
+    public static final String RANDOM = "random";
 }

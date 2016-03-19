@@ -1,22 +1,22 @@
 package com.brewerydb.api.query.order;
 
-import com.brewerydb.api.query.params.BeerParams;
+import com.brewerydb.api.query.fields.BeerFields;
 
 public enum BeerOrder {
 
-    NAME(BeerParams.NAME),
-    DESCRIPTION("description"),
-    ABV(BeerParams.ABV),
-    IBU(BeerParams.IBU),
-    GLASSWARE_ID(BeerParams.GLASSWARE_ID),
-    SRM_ID(BeerParams.SRM_ID),
-    AVAILABLE_ID(BeerParams.AVAILABLE_ID),
-    STYLE_ID(BeerParams.STYLE_ID),
-    STATUS(BeerParams.STATUS),
-    IS_ORGANIC(BeerParams.IS_ORGANIC),
-    CREATE_DATE("createDate"),
-    UPDATE_DATE("updateDate"),
-    RANDOM("random");
+    NAME(BeerFields.NAME),
+    DESCRIPTION(BeerFields.DESCRIPTION),
+    ABV(BeerFields.ABV),
+    IBU(BeerFields.IBU),
+    GLASSWARE_ID(BeerFields.GLASSWARE_ID),
+    SRM_ID(BeerFields.SRM_ID),
+    AVAILABLE_ID(BeerFields.AVAILABLE_ID),
+    STYLE_ID(BeerFields.STYLE_ID),
+    STATUS(BeerFields.STATUS),
+    IS_ORGANIC(BeerFields.IS_ORGANIC),
+    CREATE_DATE(BeerFields.CREATE_DATE),
+    UPDATE_DATE(BeerFields.UPDATE_DATE),
+    RANDOM(BeerFields.RANDOM);
 
     private final String name;
 

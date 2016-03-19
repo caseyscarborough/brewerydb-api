@@ -45,8 +45,8 @@ public class BreweryDBClientTest {
         BeersResult result = client.getBeers(query);
 
         assertTrue(result.wasSuccessful());
-        assertEquals("Newcastle", result.getData().get(0).getName());
-        assertEquals("Coffee Beer", result.getData().get(0).getStyle().getShortName());
+        assertEquals("Newcastle Brown Ale", result.getData().get(0).getName());
+        assertEquals("English Brown", result.getData().get(0).getStyle().getShortName());
     }
 
     @Test
@@ -70,8 +70,8 @@ public class BreweryDBClientTest {
         BeerResult result = client.getBeer("jUYZMk", BeerQuery.builder().withBreweries().build());
 
         assertTrue(result.wasSuccessful());
-        assertEquals("Newcastle", result.getData().getName());
-        assertEquals("Coffee Beer", result.getData().getStyle().getShortName());
+        assertEquals("Newcastle Brown Ale", result.getData().getName());
+        assertEquals("English Brown", result.getData().getStyle().getShortName());
     }
 
     @Test

@@ -18,17 +18,17 @@ public class BeerQuery extends AbstractQuery {
         }
 
         public Builder withBreweries() {
-            beerQuery.params.put("withBreweries", "Y");
+            beerQuery.params.put("withBreweries", Y);
             return this;
         }
 
         public Builder withSocialAccounts() {
-            beerQuery.params.put("withSocialAccounts", "Y");
+            beerQuery.params.put("withSocialAccounts", Y);
             return this;
         }
 
         public Builder withIngredients() {
-            beerQuery.params.put("withIngredients", "Y");
+            beerQuery.params.put("withIngredients", Y);
             return this;
         }
 
