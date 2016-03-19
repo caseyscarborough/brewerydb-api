@@ -9,6 +9,7 @@ import com.brewerydb.api.result.BeerResult;
 import com.brewerydb.api.result.BeersResult;
 import com.brewerydb.api.result.BreweriesResult;
 import com.brewerydb.api.result.BreweryResult;
+import com.brewerydb.api.result.FeaturedResult;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class BreweryDBClientTest {
@@ -110,5 +112,14 @@ public class BreweryDBClientTest {
 
         assertTrue(result.wasSuccessful());
         assertEquals("SweetWater Brewing Company", result.getData().getName());
+    }
+
+    @Test
+    public void testFeatured() throws Exception {
+        FeaturedResult result = client.getFeatured();
+
+        assertTrue(result.wasSuccessful());
+        assertNotNull(result.getData().getBeer());
+        assertNotNull(result.getData().getBrewery());
     }
 }

@@ -10,4 +10,6 @@ public class Configuration {
 
     public static final String BREWERIES_ENDPOINT = API_ENDPOINT + "/breweries";
     public static final String BREWERY_ENDPOINT = API_ENDPOINT + "/brewery";
+    public static final String FEATURED_ENDPOINT = API_ENDPOINT + "/featured";
+
 }
