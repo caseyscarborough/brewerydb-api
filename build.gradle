@@ -6,9 +6,14 @@ apply plugin: 'java'
 sourceCompatibility = 1.5
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+  compile 'com.ning:async-http-client:1.9.36'
+  compile 'com.google.code.gson:gson:2.6.2'
+  compile 'org.slf4j:slf4j-log4j12:1.7.19'
+
+  testCompile 'org.mockito:mockito-all:1.10.19'
+  testCompile 'junit:junit:4.12'
 }
