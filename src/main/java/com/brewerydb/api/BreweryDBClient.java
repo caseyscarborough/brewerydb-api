@@ -4,6 +4,7 @@ import com.brewerydb.api.config.Configuration;
 import com.brewerydb.api.exception.MissingApiKeyException;
 import com.brewerydb.api.query.BeerQuery;
 import com.brewerydb.api.query.BeersQuery;
+import com.brewerydb.api.query.BreweryQuery;
 import com.brewerydb.api.query.Query;
 import com.brewerydb.api.result.BeerResult;
 import com.brewerydb.api.result.BeersResult;
@@ -51,7 +52,11 @@ public class BreweryDBClient {
     }
 
     public BreweryResult getBrewery(String id) {
-        return get(Configuration.BREWERY_ENDPOINT + "/" + id, null, BreweryResult.class);
+        return getBrewery(id, null);
+    }
+
+    public BreweryResult getBrewery(String id, BreweryQuery query) {
+        return get(Configuration.BREWERY_ENDPOINT + "/" + id, query, BreweryResult.class);
     }
 
     private <T> T get(final String endpoint, final Query query, final Class<T> clazz) {
