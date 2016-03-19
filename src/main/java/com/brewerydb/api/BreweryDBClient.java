@@ -4,14 +4,16 @@ import com.brewerydb.api.config.Configuration;
 import com.brewerydb.api.exception.MissingApiKeyException;
 import com.brewerydb.api.query.BeerQuery;
 import com.brewerydb.api.query.BeersQuery;
+import com.brewerydb.api.query.BreweriesQuery;
 import com.brewerydb.api.query.BreweryQuery;
+import com.brewerydb.api.query.FeaturesQuery;
 import com.brewerydb.api.query.Query;
 import com.brewerydb.api.result.BeerResult;
 import com.brewerydb.api.result.BeersResult;
 import com.brewerydb.api.result.BreweriesResult;
-import com.brewerydb.api.query.BreweriesQuery;
 import com.brewerydb.api.result.BreweryResult;
 import com.brewerydb.api.result.FeaturedResult;
+import com.brewerydb.api.result.FeaturesResult;
 import com.google.gson.Gson;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
@@ -64,11 +66,21 @@ public class BreweryDBClient {
         return get(Configuration.FEATURED_ENDPOINT, null, FeaturedResult.class);
     }
 
+    public FeaturesResult getFeatures() {
+        return getFeatures(null);
+    }
+
+    public FeaturesResult getFeatures(FeaturesQuery query) {
+        return get(Configuration.FEATURES_ENDPOINT, query, FeaturesResult.class);
+    }
+
     private <T> T get(final String endpoint, final Query query, final Class<T> clazz) {
         LOGGER.debug("Performing GET request to endpoint " + endpoint);
         AsyncHttpClient client = new AsyncHttpClient();
-        AsyncHttpClient.BoundRequestBuilder builder = client.prepareGet(endpoint);
-        builder.addQueryParam("key", apiKey);
+        AsyncHttpClient.BoundRequestBuilder builder = client.prepareGet(endpoint)
+                .setFollowRedirects(true)
+                .addQueryParam("key", apiKey);
+
         if (query != null) {
             for (String key : query.getParams().keySet()) {
                 String value = query.getParams().get(key);

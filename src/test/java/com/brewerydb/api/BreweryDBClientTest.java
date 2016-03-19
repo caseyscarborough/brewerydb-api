@@ -5,11 +5,13 @@ import com.brewerydb.api.model.Status;
 import com.brewerydb.api.query.BeerQuery;
 import com.brewerydb.api.query.BeersQuery;
 import com.brewerydb.api.query.BreweriesQuery;
+import com.brewerydb.api.query.FeaturesQuery;
 import com.brewerydb.api.result.BeerResult;
 import com.brewerydb.api.result.BeersResult;
 import com.brewerydb.api.result.BreweriesResult;
 import com.brewerydb.api.result.BreweryResult;
 import com.brewerydb.api.result.FeaturedResult;
+import com.brewerydb.api.result.FeaturesResult;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -121,5 +123,15 @@ public class BreweryDBClientTest {
         assertTrue(result.wasSuccessful());
         assertNotNull(result.getData().getBeer());
         assertNotNull(result.getData().getBrewery());
+    }
+
+    @Test
+    public void testGetFeatures() throws Exception {
+        FeaturesQuery query = FeaturesQuery.builder().withYear("2015").withWeek(5).build();
+        FeaturesResult result = client.getFeatures(query);
+
+        assertTrue(result.wasSuccessful());
+        assertEquals(2, result.getData().size());
+        assertEquals("Seven Barrel Brewery", result.getData().get(1).getBrewery().getName());
     }
 }

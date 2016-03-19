@@ -12,4 +12,5 @@ public class Configuration {
     public static final String BREWERY_ENDPOINT = API_ENDPOINT + "/brewery";
     public static final String FEATURED_ENDPOINT = API_ENDPOINT + "/featured";
 
+    public static final String FEATURES_ENDPOINT = API_ENDPOINT + "/features/";
 }

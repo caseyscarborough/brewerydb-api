@@ -6,15 +6,10 @@ import com.brewerydb.api.query.sort.SortDirection;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-abstract class MultipleResultQueryBuilder<T, O extends Order, B extends MultipleResultQueryBuilder<T, O, B>> extends AbstractQueryBuilder<T> {
+abstract class MultipleResultQueryBuilder<T, O extends Order, B extends MultipleResultQueryBuilder<T, O, B>> extends PagedQueryBuilder<T, B> {
 
     public B withName(String name) {
         params.put("name", name);
-        return (B) this;
-    }
-
-    public B withPage(Integer page) {
-        params.put("p", page.toString());
         return (B) this;
     }
 
