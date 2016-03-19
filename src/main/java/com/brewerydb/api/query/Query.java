@@ -1,6 +1,8 @@
 package com.brewerydb.api.query;
 
+import java.util.Map;
+
 public interface Query {
 
-    String getQueryString();
+    Map<String, String> getParams();
 }

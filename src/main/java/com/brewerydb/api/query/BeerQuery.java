@@ -1,33 +1,53 @@
 package com.brewerydb.api.query;
 
-public class BeerQuery implements Query {
+public class BeerQuery extends AbstractQuery {
 
-    private String withBreweries;
-
-    private BeerQuery() {}
-
-    public String getQueryString() {
-        return "&withBreweries=" + withBreweries;
+    private BeerQuery() {
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    static class Builder {
+    public static class Builder {
 
         private boolean withBreweries = false;
+        private boolean withSocialAccounts = false;
+        private boolean withIngredients = false;
 
-        private Builder() {}
+        private Builder() {
+        }
 
         public Builder withBreweries() {
             this.withBreweries = true;
             return this;
         }
 
+        public Builder withSocialAccounts() {
+            this.withSocialAccounts = true;
+            return this;
+        }
+
+        public Builder withIngredients() {
+            this.withIngredients = true;
+            return this;
+        }
+
         public BeerQuery build() {
             BeerQuery beerQuery = new BeerQuery();
-            beerQuery.withBreweries = withBreweries ? "Y" : "N";
+
+            if (withBreweries) {
+                beerQuery.params.put("withBreweries", "Y");
+            }
+
+            if (withIngredients) {
+                beerQuery.params.put("withIngredients", "Y");
+            }
+
+            if (withSocialAccounts) {
+                beerQuery.params.put("withSocialAccounts", "Y");
+            }
+
             return beerQuery;
         }
     }

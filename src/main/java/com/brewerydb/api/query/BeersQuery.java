@@ -2,11 +2,7 @@ package com.brewerydb.api.query;
 
 import java.util.List;
 
-public class BeersQuery implements Query {
-
-    private Integer pageNumber;
-    private List<String> ids;
-    private String name;
+public class BeersQuery extends AbstractQuery {
 
     private BeersQuery() {
     }
@@ -15,19 +11,13 @@ public class BeersQuery implements Query {
         return new Builder();
     }
 
-    public String getQueryString() {
-        StringBuilder sb = new StringBuilder();
-        if (name != null && !name.trim().equals("")) {
-            sb.append("&name=").append(name);
-        }
-        return sb.toString();
-    }
-
     public static class Builder {
 
         private Integer pageNumber;
         private List<String> ids;
         private String name;
+
+        private Builder() {}
 
         public Builder pageNumber(Integer pageNumber) {
             this.pageNumber = pageNumber;
@@ -45,10 +35,11 @@ public class BeersQuery implements Query {
         }
 
         public BeersQuery build() {
+            // TODO: Finish implementing beer query parameters
             BeersQuery beersQuery = new BeersQuery();
-            beersQuery.name = name;
-            beersQuery.ids = ids;
-            beersQuery.pageNumber = pageNumber;
+            if (name != null) {
+                beersQuery.params.put("name", name);
+            }
             return beersQuery;
         }
 

@@ -1,13 +1,12 @@
 package com.brewerydb.api;
 
 import com.brewerydb.api.config.Configuration;
-import com.brewerydb.api.model.Beer;
+import com.brewerydb.api.exception.MissingApiKeyException;
 import com.brewerydb.api.query.BeerQuery;
 import com.brewerydb.api.query.BeersQuery;
 import com.brewerydb.api.query.Query;
 import com.brewerydb.api.result.BeerResult;
 import com.brewerydb.api.result.BeersResult;
-import com.brewerydb.api.result.Result;
 import com.google.gson.Gson;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
@@ -15,7 +14,6 @@ import com.ning.http.client.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -27,32 +25,37 @@ public class BreweryDBClient {
     private final String apiKey;
 
     public BreweryDBClient(String apiKey) {
+        if (apiKey == null || apiKey.trim().equals("")) {
+            throw new MissingApiKeyException("An API key is required to call the BreweryDB API. Obtain your key at http://www.brewerydb.com/developers.");
+        }
         this.apiKey = apiKey;
     }
 
-    public Result<List<Beer>> getBeers(BeersQuery query) {
+    public BeersResult getBeers(BeersQuery query) {
         return get(Configuration.BEERS_ENDPOINT, query, BeersResult.class);
     }
 
-    public Result<Beer> getBeer(String id) {
+    public BeerResult getBeer(String id) {
         return getBeer(id, null);
     }
 
-    public Result<Beer> getBeer(String id, BeerQuery beerQuery) {
+    public BeerResult getBeer(String id, BeerQuery beerQuery) {
         return get(Configuration.BEER_ENDPOINT + "/" + id, beerQuery, BeerResult.class);
     }
 
     private <T> T get(final String endpoint, final Query query, final Class<T> clazz) {
-        StringBuilder url = new StringBuilder(endpoint);
-        url.append("?key=").append(apiKey);
-        if (query != null) {
-            url.append(query.getQueryString());
+        LOGGER.debug("Performing GET request to endpoint " + endpoint);
+        AsyncHttpClient client = new AsyncHttpClient();
+        AsyncHttpClient.BoundRequestBuilder builder = client.prepareGet(endpoint);
+        builder.addQueryParam("key", apiKey);
+        for (String key : query.getParams().keySet()) {
+            String value = query.getParams().get(key);
+            LOGGER.debug("Adding parameter: " + key + "=" + value);
+            builder.addQueryParam(key, value);
         }
 
-        LOGGER.debug("Performing GET request to URL: " + url);
         final long start = System.currentTimeMillis();
-        AsyncHttpClient client = new AsyncHttpClient();
-        Future<T> f = client.prepareGet(url.toString()).execute(new AsyncCompletionHandler<T>() {
+        Future<T> f = builder.execute(new AsyncCompletionHandler<T>() {
             @Override
             public T onCompleted(Response response) throws Exception {
                 // TODO: Figure out a good way to handle rate-limiting...

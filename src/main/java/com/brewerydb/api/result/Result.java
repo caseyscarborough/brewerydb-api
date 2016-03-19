@@ -1,59 +1,18 @@
 package com.brewerydb.api.result;
 
-public class Result<T> {
+public interface Result<T> {
 
-    private Integer currentPage;
-    private Integer numberOfPages;
-    private Integer totalResults;
-    private T data;
-    private String status;
-    private String errorMessage;
+    Integer getCurrentPage();
 
-    public Integer getCurrentPage() {
-        return currentPage;
-    }
+    Integer getNumberOfPages();
 
-    public void setCurrentPage(Integer currentPage) {
-        this.currentPage = currentPage;
-    }
+    Integer getTotalResults();
 
-    public Integer getNumberOfPages() {
-        return numberOfPages;
-    }
+    T getData();
 
-    public void setNumberOfPages(Integer numberOfPages) {
-        this.numberOfPages = numberOfPages;
-    }
+    boolean wasSuccessful();
 
-    public Integer getTotalResults() {
-        return totalResults;
-    }
+    String getStatus();
 
-    public void setTotalResults(Integer totalResults) {
-        this.totalResults = totalResults;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
+    String getErrorMessage();
 }
