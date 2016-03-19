@@ -13,7 +13,7 @@ public class BeersQuery extends AbstractQuery {
         return new Builder();
     }
 
-    public static class Builder extends MultipleResultQueryBuilder<BeersQuery, Builder> {
+    public static class Builder extends MultipleResultQueryBuilder<BeersQuery, BeerOrder, Builder> {
 
         private Builder() {
         }
@@ -70,11 +70,6 @@ public class BeersQuery extends AbstractQuery {
 
         public Builder withStatus(Status status) {
             params.put(BeerFields.STATUS, status.getName());
-            return this;
-        }
-
-        public Builder withOrder(BeerOrder order) {
-            params.put(BeerFields.ORDER, order.getName());
             return this;
         }
 

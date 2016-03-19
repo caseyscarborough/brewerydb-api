@@ -1,6 +1,7 @@
 package com.brewerydb.api.query;
 
 import com.brewerydb.api.model.Status;
+import com.brewerydb.api.query.order.BreweryOrder;
 
 public class BreweriesQuery extends AbstractQuery {
 
@@ -10,7 +11,7 @@ public class BreweriesQuery extends AbstractQuery {
         return new Builder();
     }
 
-    public static class Builder extends MultipleResultQueryBuilder<BreweriesQuery, Builder> {
+    public static class Builder extends MultipleResultQueryBuilder<BreweriesQuery, BreweryOrder, Builder> {
 
         private Builder() {
         }

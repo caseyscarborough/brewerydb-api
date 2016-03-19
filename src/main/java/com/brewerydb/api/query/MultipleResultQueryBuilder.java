@@ -1,11 +1,12 @@
 package com.brewerydb.api.query;
 
+import com.brewerydb.api.query.order.Order;
 import com.brewerydb.api.query.sort.SortDirection;
 
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-abstract class MultipleResultQueryBuilder<T, B extends MultipleResultQueryBuilder<T, B>> extends AbstractQueryBuilder<T> {
+abstract class MultipleResultQueryBuilder<T, O extends Order, B extends MultipleResultQueryBuilder<T, O, B>> extends AbstractQueryBuilder<T> {
 
     public B withName(String name) {
         params.put("name", name);
@@ -27,6 +28,11 @@ abstract class MultipleResultQueryBuilder<T, B extends MultipleResultQueryBuilde
 
     public B withSort(SortDirection sort) {
         params.put("sort", sort.getName());
+        return (B) this;
+    }
+
+    public B withOrder(O order) {
+        params.put("order", order.getName());
         return (B) this;
     }
 

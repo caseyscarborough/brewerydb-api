@@ -2,7 +2,7 @@ package com.brewerydb.api.query.order;
 
 import com.brewerydb.api.query.fields.BeerFields;
 
-public enum BeerOrder {
+public enum BeerOrder implements Order {
 
     NAME(BeerFields.NAME),
     DESCRIPTION(BeerFields.DESCRIPTION),
