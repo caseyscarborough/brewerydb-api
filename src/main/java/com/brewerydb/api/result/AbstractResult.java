@@ -4,9 +4,9 @@ public abstract class AbstractResult<T> implements Result<T> {
 
     private static final String SUCCESS_STATUS = "success";
 
-    private Integer currentPage;
-    private Integer numberOfPages;
-    private Integer totalResults;
+    private int currentPage;
+    private int numberOfPages;
+    private int totalResults;
     private T data;
     private String status;
     private String errorMessage;

@@ -1,6 +1,7 @@
 package com.brewerydb.api;
 
 import com.brewerydb.api.exception.MissingApiKeyException;
+import com.brewerydb.api.model.Status;
 import com.brewerydb.api.query.BeerQuery;
 import com.brewerydb.api.query.BeersQuery;
 import com.brewerydb.api.result.BeerResult;
@@ -46,6 +47,22 @@ public class BreweryDBClientTest {
         assertTrue(result.wasSuccessful());
         assertEquals("Newcastle", result.getData().get(0).getName());
         assertEquals("Coffee Beer", result.getData().get(0).getStyle().getShortName());
+    }
+
+    @Test
+    public void testGetBeersWithMoreQueryParameters() throws Exception {
+        BeersQuery query = BeersQuery.builder()
+                .withName("Buzz Light")
+                .withAbv("5.5")
+                .withOrganic(true)
+                .withStatus(Status.VERIFIED)
+                .build();
+
+        BeersResult beersResult = client.getBeers(query);
+        assertTrue(beersResult.wasSuccessful());
+        assertEquals(1, beersResult.getData().size());
+        assertEquals("Buzz Light", beersResult.getData().get(0).getName());
+
     }
 
     @Test

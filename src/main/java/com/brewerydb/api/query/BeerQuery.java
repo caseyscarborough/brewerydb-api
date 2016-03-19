@@ -11,43 +11,28 @@ public class BeerQuery extends AbstractQuery {
 
     public static class Builder {
 
-        private boolean withBreweries = false;
-        private boolean withSocialAccounts = false;
-        private boolean withIngredients = false;
+        private final BeerQuery beerQuery;
 
         private Builder() {
+            beerQuery = new BeerQuery();
         }
 
         public Builder withBreweries() {
-            this.withBreweries = true;
+            beerQuery.params.put("withBreweries", "Y");
             return this;
         }
 
         public Builder withSocialAccounts() {
-            this.withSocialAccounts = true;
+            beerQuery.params.put("withSocialAccounts", "Y");
             return this;
         }
 
         public Builder withIngredients() {
-            this.withIngredients = true;
+            beerQuery.params.put("withIngredients", "Y");
             return this;
         }
 
         public BeerQuery build() {
-            BeerQuery beerQuery = new BeerQuery();
-
-            if (withBreweries) {
-                beerQuery.params.put("withBreweries", "Y");
-            }
-
-            if (withIngredients) {
-                beerQuery.params.put("withIngredients", "Y");
-            }
-
-            if (withSocialAccounts) {
-                beerQuery.params.put("withSocialAccounts", "Y");
-            }
-
             return beerQuery;
         }
     }
