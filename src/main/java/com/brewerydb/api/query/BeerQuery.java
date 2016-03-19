@@ -1,5 +1,8 @@
 package com.brewerydb.api.query;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BeerQuery extends AbstractQuery {
 
     private BeerQuery() {
@@ -9,30 +12,31 @@ public class BeerQuery extends AbstractQuery {
         return new Builder();
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractQueryBuilder<BeerQuery> {
 
-        private final BeerQuery beerQuery;
+        private Map<String, String> params = new HashMap<String, String>();
 
         private Builder() {
-            beerQuery = new BeerQuery();
         }
 
         public Builder withBreweries() {
-            beerQuery.params.put("withBreweries", Y);
+            params.put("withBreweries", Y);
             return this;
         }
 
         public Builder withSocialAccounts() {
-            beerQuery.params.put("withSocialAccounts", Y);
+            params.put("withSocialAccounts", Y);
             return this;
         }
 
         public Builder withIngredients() {
-            beerQuery.params.put("withIngredients", Y);
+            params.put("withIngredients", Y);
             return this;
         }
 
         public BeerQuery build() {
+            BeerQuery beerQuery = new BeerQuery();
+            beerQuery.params = params;
             return beerQuery;
         }
     }

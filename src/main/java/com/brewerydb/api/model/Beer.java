@@ -15,7 +15,7 @@ public class Beer {
     private String updateDate;
 
     private Available available;
-    private Labels labels;
+    private BeerLabels labels;
     private Style style;
 
     public String getId() {
@@ -114,11 +114,11 @@ public class Beer {
         this.available = available;
     }
 
-    public Labels getLabels() {
+    public BeerLabels getLabels() {
         return labels;
     }
 
-    public void setLabels(Labels labels) {
+    public void setLabels(BeerLabels labels) {
         this.labels = labels;
     }
 

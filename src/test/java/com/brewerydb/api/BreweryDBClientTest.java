@@ -4,8 +4,10 @@ import com.brewerydb.api.exception.MissingApiKeyException;
 import com.brewerydb.api.model.Status;
 import com.brewerydb.api.query.BeerQuery;
 import com.brewerydb.api.query.BeersQuery;
+import com.brewerydb.api.query.BreweriesQuery;
 import com.brewerydb.api.result.BeerResult;
 import com.brewerydb.api.result.BeersResult;
+import com.brewerydb.api.result.BreweriesResult;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -80,5 +82,15 @@ public class BreweryDBClientTest {
 
         assertFalse(result.wasSuccessful());
         assertEquals("The endpoint you requested could not be found", result.getErrorMessage());
+    }
+
+    @Test
+    public void testGetBreweries() throws Exception {
+        BreweriesQuery query = BreweriesQuery.builder().withName("SweetWater Brewing Company").build();
+        BreweriesResult result = client.getBreweries(query);
+
+        assertTrue(result.wasSuccessful());
+        assertEquals(1, result.getData().size());
+        assertEquals("SweetWater Brewing Company", result.getData().get(0).getName());
     }
 }

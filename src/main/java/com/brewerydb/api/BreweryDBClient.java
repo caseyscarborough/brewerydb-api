@@ -7,6 +7,8 @@ import com.brewerydb.api.query.BeersQuery;
 import com.brewerydb.api.query.Query;
 import com.brewerydb.api.result.BeerResult;
 import com.brewerydb.api.result.BeersResult;
+import com.brewerydb.api.result.BreweriesResult;
+import com.brewerydb.api.query.BreweriesQuery;
 import com.google.gson.Gson;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
@@ -41,6 +43,10 @@ public class BreweryDBClient {
 
     public BeerResult getBeer(String id, BeerQuery beerQuery) {
         return get(Configuration.BEER_ENDPOINT + "/" + id, beerQuery, BeerResult.class);
+    }
+
+    public BreweriesResult getBreweries(BreweriesQuery query) {
+        return get(Configuration.BREWERIES_ENDPOINT, query, BreweriesResult.class);
     }
 
     private <T> T get(final String endpoint, final Query query, final Class<T> clazz) {

@@ -1,6 +1,6 @@
 package com.brewerydb.api.model;
 
-public class Labels {
+public class BeerLabels {
 
     private String icon;
     private String medium;
