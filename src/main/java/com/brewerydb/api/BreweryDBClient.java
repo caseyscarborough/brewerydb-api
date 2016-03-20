@@ -33,6 +33,9 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+/**
+ * The client for interacting with the BreweryDB API.
+ */
 public class BreweryDBClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BreweryDBClient.class);
@@ -48,26 +51,51 @@ public class BreweryDBClient {
         this.apiKey = apiKey;
     }
 
+    /**
+     * Returns a list of beers matching a criteria.
+     * @param request The request parameters for this call.
+     * @return {@link GetBeersResult} - The {@link Result} containing a list of beers.
+     */
     public GetBeersResult getBeers(GetBeersRequest request) {
         return waitFor(getBeersAsync(request));
     }
 
+    /**
+     * The asynchronous version of {@link this#getBeers(GetBeersRequest)}.
+     */
     public Future<GetBeersResult> getBeersAsync(GetBeersRequest request) {
         return requestAsync(RequestMethod.GET, Configuration.BEERS_ENDPOINT, request, GetBeersResult.class);
     }
 
+    /**
+     * Returns a single beer by its ID.
+     * @param id The ID of the beer to retrieve.
+     * @return {@link GetBeerResult} - The {@link Result} containing the beer.
+     */
     public GetBeerResult getBeer(String id) {
         return waitFor(getBeerAsync(id));
     }
 
+    /**
+     * The asynchronous version of {@link this#getBeer(String)}.
+     */
     public Future<GetBeerResult> getBeerAsync(String id) {
         return getBeerAsync(id, null);
     }
 
+    /**
+     * Returns a single beer by its ID and request parameters.
+     * @param id The ID of the beer to retrieve.
+     * @param request The request parameters for this call.
+     * @return {@link GetBeerResult} - The {@link Result} containing the beer.
+     */
     public GetBeerResult getBeer(String id, GetBeerRequest request) {
         return waitFor(getBeerAsync(id, request));
     }
 
+    /**
+     * The asynchronous version of {@link this#getBeer(String, GetBeerRequest)}.
+     */
     public Future<GetBeerResult> getBeerAsync(String id, GetBeerRequest request) {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to retrieve a beer.");
@@ -75,10 +103,18 @@ public class BreweryDBClient {
         return requestAsync(RequestMethod.GET, Configuration.BEER_ENDPOINT + "/" + id, request, GetBeerResult.class);
     }
 
+    /**
+     * Requests a new beer to be created in the API.
+     * @param request The request parameters for this call.
+     * @return {@link AddBeerResult} - The {@link Result} containing the message response from the API.
+     */
     public AddBeerResult addBeer(AddBeerRequest request) {
         return waitFor(addBeerAsync(request));
     }
 
+    /**
+     * The asynchronous version of {@link this#addBeer(AddBeerRequest)}.
+     */
     public Future<AddBeerResult> addBeerAsync(AddBeerRequest request) {
         if (request == null) {
             throw new IllegalArgumentException("Request parameter is required to add a beer.");
@@ -86,10 +122,19 @@ public class BreweryDBClient {
         return requestAsync(RequestMethod.POST, Configuration.BEERS_ENDPOINT, request, AddBeerResult.class);
     }
 
+    /**
+     * Requests that a beer's properties be updated in the API.
+     * @param id The ID of the beer to update.
+     * @param request The request parameters for this call.
+     * @return {@link UpdateBeerResult} - The {@link Result} containing the message response from the API.
+     */
     public UpdateBeerResult updateBeer(String id, UpdateBeerRequest request) {
         return waitFor(updateBeerAsync(id, request));
     }
 
+    /**
+     * The asynchronous version of {@link this#updateBeer(String, UpdateBeerRequest)}.
+     */
     public Future<UpdateBeerResult> updateBeerAsync(String id, UpdateBeerRequest request) {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to update a beer.");
@@ -97,10 +142,18 @@ public class BreweryDBClient {
         return requestAsync(RequestMethod.PUT, Configuration.BEER_ENDPOINT + "/" + id, request, UpdateBeerResult.class);
     }
 
+    /**
+     * Requests that a beer be deleted from the API.
+     * @param id The ID of the beer to request deletion for.
+     * @return {@link DeleteBeerResult} - The {@link Result} containing the message response from the API.
+     */
     public DeleteBeerResult deleteBeer(String id) {
         return waitFor(deleteBeerAsync(id));
     }
 
+    /**
+     * The asynchronous version of {@link this##deleteBeer(String)}.
+     */
     public Future<DeleteBeerResult> deleteBeerAsync(String id) {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to delete a beer.");
@@ -108,34 +161,66 @@ public class BreweryDBClient {
         return requestAsync(RequestMethod.DELETE, Configuration.BEER_ENDPOINT + "/" + id, null, DeleteBeerResult.class);
     }
 
+    /**
+     * Returns a random beer.
+     * @return {@link GetRandomBeerResult} - The {@link Result} containing a random beer.
+     */
     public GetRandomBeerResult getRandomBeer() {
         return waitFor(getRandomBeerAsync());
     }
 
+    /**
+     * The asynchronous version of {@link this#getRandomBeer()}.
+     */
     public Future<GetRandomBeerResult> getRandomBeerAsync() {
         return requestAsync(RequestMethod.GET, Configuration.RANDOM_BEER_ENDPOINT, null, GetRandomBeerResult.class);
     }
 
+    /**
+     * Returns a list of breweries.
+     * @param request The request parameters for this call.
+     * @return {@link GetBreweriesResult} - The {@link Result} containing the list of breweries.
+     */
     public GetBreweriesResult getBreweries(GetBreweriesRequest request) {
         return waitFor(getBreweriesAsync(request));
     }
 
+    /**
+     * The asynchronous version of {@link this#getBreweries(GetBreweriesRequest)}.
+     */
     public Future<GetBreweriesResult> getBreweriesAsync(GetBreweriesRequest query) {
         return requestAsync(RequestMethod.GET, Configuration.BREWERIES_ENDPOINT, query, GetBreweriesResult.class);
     }
 
+    /**
+     * Returns a single brewery by ID.
+     * @param id The ID of the brewery to retrieve.
+     * @return {@link GetBreweryResult} - The {@link Result} containing the single brewery.
+     */
     public GetBreweryResult getBrewery(String id) {
         return waitFor(getBreweryAsync(id));
     }
 
+    /**
+     * The asynchronous version of {@link this#getBrewery(String)}.
+     */
     public Future<GetBreweryResult> getBreweryAsync(String id) {
         return getBreweryAsync(id, null);
     }
 
+    /**
+     * Returns a brewery based on ID and other parameters.
+     * @param id The ID of the brewery.
+     * @param request The request parameters.
+     * @return {@link GetBreweryRequest} - The {@link Result} containing the single brewery.
+     */
     public GetBreweryResult getBrewery(String id, GetBreweryRequest request) {
         return waitFor(getBreweryAsync(id, request));
     }
 
+    /**
+     * The asynchronous version of {@link this#getBrewery(String, GetBreweryRequest)}.
+     */
     public Future<GetBreweryResult> getBreweryAsync(String id, GetBreweryRequest query) {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to retrieve a brewery.");
@@ -143,26 +228,48 @@ public class BreweryDBClient {
         return requestAsync(RequestMethod.GET, Configuration.BREWERY_ENDPOINT + "/" + id, query, GetBreweryResult.class);
     }
 
+    /**
+     * Returns the current featured beer and brewery.
+     * @return {@link FeaturedResult} - The {@link Result} containing the featured brewery and beer.
+     */
     public FeaturedResult getFeatured() {
         return waitFor(getFeaturedAsync());
     }
 
+    /**
+     * The asynchronous version of {@link this#getFeatured()}.
+     */
     public Future<FeaturedResult> getFeaturedAsync() {
         return requestAsync(RequestMethod.GET, Configuration.FEATURED_ENDPOINT, null, FeaturedResult.class);
     }
 
+    /**
+     * Returns a list of all features.
+     * @return {@link FeaturesResult} - The {@link Result} containing all features.
+     */
     public FeaturesResult getFeatures() {
         return waitFor(getFeaturesAsync());
     }
 
+    /**
+     * The asynchronous version of {@link this#getFeatures()}.
+     */
     public Future<FeaturesResult> getFeaturesAsync() {
         return getFeaturesAsync(null);
     }
 
+    /**
+     * Returns a list of all features with filtering.
+     * @param query The parameters to filter by.
+     * @return  {@link FeaturesResult} - The {@link Result} containing all matching features.
+     */
     public FeaturesResult getFeatures(GetFeaturesRequest query) {
         return waitFor(getFeaturesAsync(query));
     }
 
+    /**
+     * The asynchronous version of {@link this#getFeatures(GetFeaturesRequest)}.
+     */
     public Future<FeaturesResult> getFeaturesAsync(GetFeaturesRequest query) {
         return requestAsync(RequestMethod.GET, Configuration.FEATURES_ENDPOINT, query, FeaturesResult.class);
     }
