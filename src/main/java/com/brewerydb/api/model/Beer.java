@@ -1,5 +1,7 @@
 package com.brewerydb.api.model;
 
+import java.util.List;
+
 public class Beer {
 
     private String id;
@@ -18,6 +20,7 @@ public class Beer {
     private BeerLabels labels;
     private Style style;
     private Glass glass;
+    private List<Brewery> breweries;
 
     public String getId() {
         return id;
@@ -137,5 +140,13 @@ public class Beer {
 
     public void setGlass(Glass glass) {
         this.glass = glass;
+    }
+
+    public List<Brewery> getBreweries() {
+        return breweries;
+    }
+
+    public void setBreweries(List<Brewery> breweries) {
+        this.breweries = breweries;
     }
 }

@@ -53,6 +53,26 @@ public class GetBreweriesRequest extends AbstractRequest {
             return this;
         }
 
+        public Builder withSocialAccounts() {
+            params.put("withSocialAccounts", Y);
+            return this;
+        }
+
+        public Builder withGuilds() {
+            params.put("withGuilds", Y);
+            return this;
+        }
+
+        public Builder withLocations() {
+            params.put("withLocations", Y);
+            return this;
+        }
+
+        public Builder withAlternateNames() {
+            params.put("withAlternateNames", Y);
+            return this;
+        }
+
         public GetBreweriesRequest build() {
             return new GetBreweriesRequest(params);
         }
