@@ -7,6 +7,7 @@ import com.brewerydb.api.request.ApiRequest;
 import com.brewerydb.api.request.beer.AddBeerRequest;
 import com.brewerydb.api.request.beer.GetBeerRequest;
 import com.brewerydb.api.request.beer.GetBeersRequest;
+import com.brewerydb.api.request.beer.GetRandomBeerRequest;
 import com.brewerydb.api.request.beer.UpdateBeerRequest;
 import com.brewerydb.api.request.brewery.GetBreweriesRequest;
 import com.brewerydb.api.request.brewery.GetBreweryRequest;
@@ -217,14 +218,30 @@ public class BreweryDBClient {
      * @return {@link GetRandomBeerResult} - The {@link Result} containing a random beer.
      */
     public GetRandomBeerResult getRandomBeer() {
-        return waitFor(getRandomBeerAsync());
+        return waitFor(getRandomBeerAsync(null));
     }
 
     /**
      * The asynchronous version of {@link #getRandomBeer()}.
      */
     public Future<GetRandomBeerResult> getRandomBeerAsync() {
-        return requestAsync(RequestMethod.GET, Configuration.RANDOM_BEER_ENDPOINT, null, GetRandomBeerResult.class);
+        return getRandomBeerAsync(null);
+    }
+
+    /**
+     * Returns a random beer matching a criteria.
+     * @param request The request criteria.
+     * @return {@link GetRandomBeerResult} - The {@link Result} containing a random beer.
+     */
+    public GetRandomBeerResult getRandomBeer(GetRandomBeerRequest request) {
+        return waitFor(getRandomBeerAsync(request));
+    }
+
+    /**
+     * The asynchronous version of {@link #getRandomBeer(GetRandomBeerRequest)}.
+     */
+    public Future<GetRandomBeerResult> getRandomBeerAsync(GetRandomBeerRequest request) {
+        return requestAsync(RequestMethod.GET, Configuration.RANDOM_BEER_ENDPOINT, request, GetRandomBeerResult.class);
     }
 
     /**

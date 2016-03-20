@@ -14,7 +14,7 @@ public class GetBeersRequest extends AbstractRequest {
         super(params);
     }
 
-    public static Builder builder() {
+    static Builder builder() {
         return new Builder();
     }
 

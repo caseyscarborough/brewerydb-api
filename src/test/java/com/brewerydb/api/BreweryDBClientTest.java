@@ -11,12 +11,14 @@ import com.brewerydb.api.request.beer.AddBeerRequest;
 import com.brewerydb.api.request.beer.BeerRequest;
 import com.brewerydb.api.request.beer.GetBeerRequest;
 import com.brewerydb.api.request.beer.GetBeersRequest;
+import com.brewerydb.api.request.beer.GetRandomBeerRequest;
 import com.brewerydb.api.request.beer.UpdateBeerRequest;
 import com.brewerydb.api.request.beer.order.BeerOrder;
 import com.brewerydb.api.request.brewery.BreweryRequest;
 import com.brewerydb.api.request.brewery.GetBreweriesRequest;
 import com.brewerydb.api.request.brewery.GetBreweryRequest;
 import com.brewerydb.api.request.brewery.order.BreweryOrder;
+import com.brewerydb.api.request.feature.FeatureRequest;
 import com.brewerydb.api.request.feature.GetFeaturesRequest;
 import com.brewerydb.api.request.sort.SortDirection;
 import com.brewerydb.api.result.GetRandomBeerResult;
@@ -76,7 +78,7 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetBeersWithMoreQueryParameters() throws Exception {
-        GetBeersRequest query = GetBeersRequest.builder()
+        GetBeersRequest query = BeerRequest.getBeers()
             .withName("Buzz Light")
             .withAbv("5.5")
             .withOrganic(true)
@@ -108,7 +110,7 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetBeerWithValidId() throws Exception {
-        GetBeerResult result = client.getBeer("7ET5OY", GetBeerRequest.builder().withBreweries().build());
+        GetBeerResult result = client.getBeer("7ET5OY", BeerRequest.getBeer().withBreweries().build());
 
         assertTrue(result.wasSuccessful());
         assertEquals("Newcastle Brown Ale", result.getData().getName());
@@ -119,12 +121,12 @@ public class BreweryDBClientTest {
     public void testGetBeerWithInvalidId() throws Exception {
         expectedException.expect(BreweryDBException.class);
         expectedException.expectMessage("The endpoint you requested could not be found");
-        client.getBeer("123", GetBeerRequest.builder().withBreweries().build());
+        client.getBeer("123", BeerRequest.getBeer().withBreweries().build());
     }
 
     @Test
     public void testGetBreweries() throws Exception {
-        GetBreweriesRequest query = GetBreweriesRequest.builder().withName("SweetWater Brewing Company").build();
+        GetBreweriesRequest query = BreweryRequest.getBreweries().withName("SweetWater Brewing Company").build();
         GetBreweriesResult result = client.getBreweries(query);
 
         assertTrue(result.wasSuccessful());
@@ -153,7 +155,7 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetFeatures() throws Exception {
-        GetFeaturesRequest query = GetFeaturesRequest.builder().withYear("2015").withWeek(5).build();
+        GetFeaturesRequest query = FeatureRequest.getFeatures().withYear("2015").withWeek(5).build();
         FeaturesResult result = client.getFeatures(query);
 
         assertTrue(result.wasSuccessful());
@@ -164,7 +166,7 @@ public class BreweryDBClientTest {
     @Test
     public void testAddBeerWithoutName() throws Exception {
         expectedException.expect(MissingRequestParameterException.class);
-        AddBeerRequest.builder().build();
+        BeerRequest.addBeer().build();
     }
 
     @Test
@@ -220,5 +222,14 @@ public class BreweryDBClientTest {
         assertTrue(result.wasSuccessful());
         assertNotNull(result.getData());
         assertTrue(result.getData() instanceof Beer);
+    }
+
+    @Test
+    public void testGetRandomBeerMatchingCriteria() throws Exception {
+        GetRandomBeerRequest request = BeerRequest.getRandomBeer().withAbv("8,10").withStyleId(121).build();
+        GetRandomBeerResult result = client.getRandomBeer(request);
+
+        assertTrue(result.wasSuccessful());
+        assertNotNull(result.getData());
     }
 }

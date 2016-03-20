@@ -6,6 +6,10 @@ public class BeerRequest {
         return GetBeerRequest.builder();
     }
 
+    public static GetRandomBeerRequest.Builder getRandomBeer() {
+        return GetRandomBeerRequest.builder();
+    }
+
     public static GetBeersRequest.Builder getBeers() {
         return GetBeersRequest.builder();
     }

@@ -11,7 +11,7 @@ public class GetFeaturesRequest extends AbstractRequest {
         super(params);
     }
 
-    public static Builder builder() {
+    static Builder builder() {
         return new Builder();
     }
 
