@@ -35,6 +35,45 @@ import java.util.concurrent.Future;
 
 /**
  * The client for interacting with the BreweryDB API.
+ * <p>
+ * You can create a new client using your API key:
+ * <p>
+ * <pre>
+ * BreweryDBClient client = new BreweryDBClient("api-key");
+ * </pre>
+ * <p>
+ * Each request has a {@link Result}, which matches the name of the request. The
+ * requested content can be retrieved by calling the {@link Result#getData()} method:
+ * <p>
+ * <pre>
+ * GetRandomBeerResult result = client.getRandomBeer();
+ * Beer beer = result.getData();
+ * </pre>
+ * <p>
+ * Most requests have filtering or information to send. These are implementations
+ * of the {@link ApiRequest} class, and they use a builder format.
+ * <p>
+ * <pre>
+ * GetBeersRequest request = BeerRequest.getBeers()
+ *         .withName("Newcastle*")       // Return beers matching name
+ *         .withBreweries()              // Include brewery information
+ *         .withOrder(BeerOrder.NAME)    // Order by name
+ *         .withSort(SortDirection.DESC) // Sort descending
+ *         .build();
+ *
+ * GetBeersResult result = client.getBeers(request);
+ * List&lt;Beer&gt; beers = result.getData();
+ * </pre>
+ * <p>
+ * Each method also has an asynchronous version:
+ * <p>
+ * <pre>
+ * Future&lt;GetRandomBeerResult&gt; future = client.getRandomBeerAsync();
+ *
+ * // do some other work
+ *
+ * GetRandomBeerResult result = future.get();
+ * </pre>
  */
 public class BreweryDBClient {
 
@@ -44,6 +83,11 @@ public class BreweryDBClient {
     private final String apiKey;
     private final Gson gson = new Gson();
 
+    /**
+     * Constructor for {@link BreweryDBClient}.
+     *
+     * @param apiKey The API key provided by BreweryDB.
+     */
     public BreweryDBClient(String apiKey) {
         if (apiKey == null || apiKey.trim().equals("")) {
             throw new MissingApiKeyException("An API key is required to call the BreweryDB API. Obtain your key at http://www.brewerydb.com/developers.");
@@ -53,6 +97,7 @@ public class BreweryDBClient {
 
     /**
      * Returns a list of beers matching a criteria.
+     *
      * @param request The request parameters for this call.
      * @return {@link GetBeersResult} - The {@link Result} containing a list of beers.
      */
@@ -61,7 +106,7 @@ public class BreweryDBClient {
     }
 
     /**
-     * The asynchronous version of {@link this#getBeers(GetBeersRequest)}.
+     * The asynchronous version of {@link #getBeers(GetBeersRequest)}.
      */
     public Future<GetBeersResult> getBeersAsync(GetBeersRequest request) {
         return requestAsync(RequestMethod.GET, Configuration.BEERS_ENDPOINT, request, GetBeersResult.class);
@@ -69,6 +114,7 @@ public class BreweryDBClient {
 
     /**
      * Returns a single beer by its ID.
+     *
      * @param id The ID of the beer to retrieve.
      * @return {@link GetBeerResult} - The {@link Result} containing the beer.
      */
@@ -77,7 +123,7 @@ public class BreweryDBClient {
     }
 
     /**
-     * The asynchronous version of {@link this#getBeer(String)}.
+     * The asynchronous version of {@link #getBeer(String)}.
      */
     public Future<GetBeerResult> getBeerAsync(String id) {
         return getBeerAsync(id, null);
@@ -85,7 +131,8 @@ public class BreweryDBClient {
 
     /**
      * Returns a single beer by its ID and request parameters.
-     * @param id The ID of the beer to retrieve.
+     *
+     * @param id      The ID of the beer to retrieve.
      * @param request The request parameters for this call.
      * @return {@link GetBeerResult} - The {@link Result} containing the beer.
      */
@@ -94,7 +141,7 @@ public class BreweryDBClient {
     }
 
     /**
-     * The asynchronous version of {@link this#getBeer(String, GetBeerRequest)}.
+     * The asynchronous version of {@link #getBeer(String, GetBeerRequest)}.
      */
     public Future<GetBeerResult> getBeerAsync(String id, GetBeerRequest request) {
         if (id == null) {
@@ -105,6 +152,7 @@ public class BreweryDBClient {
 
     /**
      * Requests a new beer to be created in the API.
+     *
      * @param request The request parameters for this call.
      * @return {@link AddBeerResult} - The {@link Result} containing the message response from the API.
      */
@@ -113,7 +161,7 @@ public class BreweryDBClient {
     }
 
     /**
-     * The asynchronous version of {@link this#addBeer(AddBeerRequest)}.
+     * The asynchronous version of {@link #addBeer(AddBeerRequest)}.
      */
     public Future<AddBeerResult> addBeerAsync(AddBeerRequest request) {
         if (request == null) {
@@ -124,7 +172,8 @@ public class BreweryDBClient {
 
     /**
      * Requests that a beer's properties be updated in the API.
-     * @param id The ID of the beer to update.
+     *
+     * @param id      The ID of the beer to update.
      * @param request The request parameters for this call.
      * @return {@link UpdateBeerResult} - The {@link Result} containing the message response from the API.
      */
@@ -133,7 +182,7 @@ public class BreweryDBClient {
     }
 
     /**
-     * The asynchronous version of {@link this#updateBeer(String, UpdateBeerRequest)}.
+     * The asynchronous version of {@link #updateBeer(String, UpdateBeerRequest)}.
      */
     public Future<UpdateBeerResult> updateBeerAsync(String id, UpdateBeerRequest request) {
         if (id == null) {
@@ -144,6 +193,7 @@ public class BreweryDBClient {
 
     /**
      * Requests that a beer be deleted from the API.
+     *
      * @param id The ID of the beer to request deletion for.
      * @return {@link DeleteBeerResult} - The {@link Result} containing the message response from the API.
      */
@@ -152,7 +202,7 @@ public class BreweryDBClient {
     }
 
     /**
-     * The asynchronous version of {@link this##deleteBeer(String)}.
+     * The asynchronous version of {@link ##deleteBeer(String)}.
      */
     public Future<DeleteBeerResult> deleteBeerAsync(String id) {
         if (id == null) {
@@ -163,6 +213,7 @@ public class BreweryDBClient {
 
     /**
      * Returns a random beer.
+     *
      * @return {@link GetRandomBeerResult} - The {@link Result} containing a random beer.
      */
     public GetRandomBeerResult getRandomBeer() {
@@ -170,7 +221,7 @@ public class BreweryDBClient {
     }
 
     /**
-     * The asynchronous version of {@link this#getRandomBeer()}.
+     * The asynchronous version of {@link #getRandomBeer()}.
      */
     public Future<GetRandomBeerResult> getRandomBeerAsync() {
         return requestAsync(RequestMethod.GET, Configuration.RANDOM_BEER_ENDPOINT, null, GetRandomBeerResult.class);
@@ -178,6 +229,7 @@ public class BreweryDBClient {
 
     /**
      * Returns a list of breweries.
+     *
      * @param request The request parameters for this call.
      * @return {@link GetBreweriesResult} - The {@link Result} containing the list of breweries.
      */
@@ -186,7 +238,7 @@ public class BreweryDBClient {
     }
 
     /**
-     * The asynchronous version of {@link this#getBreweries(GetBreweriesRequest)}.
+     * The asynchronous version of {@link #getBreweries(GetBreweriesRequest)}.
      */
     public Future<GetBreweriesResult> getBreweriesAsync(GetBreweriesRequest query) {
         return requestAsync(RequestMethod.GET, Configuration.BREWERIES_ENDPOINT, query, GetBreweriesResult.class);
@@ -194,6 +246,7 @@ public class BreweryDBClient {
 
     /**
      * Returns a single brewery by ID.
+     *
      * @param id The ID of the brewery to retrieve.
      * @return {@link GetBreweryResult} - The {@link Result} containing the single brewery.
      */
@@ -202,7 +255,7 @@ public class BreweryDBClient {
     }
 
     /**
-     * The asynchronous version of {@link this#getBrewery(String)}.
+     * The asynchronous version of {@link #getBrewery(String)}.
      */
     public Future<GetBreweryResult> getBreweryAsync(String id) {
         return getBreweryAsync(id, null);
@@ -210,7 +263,8 @@ public class BreweryDBClient {
 
     /**
      * Returns a brewery based on ID and other parameters.
-     * @param id The ID of the brewery.
+     *
+     * @param id      The ID of the brewery.
      * @param request The request parameters.
      * @return {@link GetBreweryRequest} - The {@link Result} containing the single brewery.
      */
@@ -219,7 +273,7 @@ public class BreweryDBClient {
     }
 
     /**
-     * The asynchronous version of {@link this#getBrewery(String, GetBreweryRequest)}.
+     * The asynchronous version of {@link #getBrewery(String, GetBreweryRequest)}.
      */
     public Future<GetBreweryResult> getBreweryAsync(String id, GetBreweryRequest query) {
         if (id == null) {
@@ -230,6 +284,7 @@ public class BreweryDBClient {
 
     /**
      * Returns the current featured beer and brewery.
+     *
      * @return {@link FeaturedResult} - The {@link Result} containing the featured brewery and beer.
      */
     public FeaturedResult getFeatured() {
@@ -237,7 +292,7 @@ public class BreweryDBClient {
     }
 
     /**
-     * The asynchronous version of {@link this#getFeatured()}.
+     * The asynchronous version of {@link #getFeatured()}.
      */
     public Future<FeaturedResult> getFeaturedAsync() {
         return requestAsync(RequestMethod.GET, Configuration.FEATURED_ENDPOINT, null, FeaturedResult.class);
@@ -245,6 +300,7 @@ public class BreweryDBClient {
 
     /**
      * Returns a list of all features.
+     *
      * @return {@link FeaturesResult} - The {@link Result} containing all features.
      */
     public FeaturesResult getFeatures() {
@@ -252,7 +308,7 @@ public class BreweryDBClient {
     }
 
     /**
-     * The asynchronous version of {@link this#getFeatures()}.
+     * The asynchronous version of {@link #getFeatures()}.
      */
     public Future<FeaturesResult> getFeaturesAsync() {
         return getFeaturesAsync(null);
@@ -260,15 +316,16 @@ public class BreweryDBClient {
 
     /**
      * Returns a list of all features with filtering.
+     *
      * @param query The parameters to filter by.
-     * @return  {@link FeaturesResult} - The {@link Result} containing all matching features.
+     * @return {@link FeaturesResult} - The {@link Result} containing all matching features.
      */
     public FeaturesResult getFeatures(GetFeaturesRequest query) {
         return waitFor(getFeaturesAsync(query));
     }
 
     /**
-     * The asynchronous version of {@link this#getFeatures(GetFeaturesRequest)}.
+     * The asynchronous version of {@link #getFeatures(GetFeaturesRequest)}.
      */
     public Future<FeaturesResult> getFeaturesAsync(GetFeaturesRequest query) {
         return requestAsync(RequestMethod.GET, Configuration.FEATURES_ENDPOINT, query, FeaturesResult.class);
