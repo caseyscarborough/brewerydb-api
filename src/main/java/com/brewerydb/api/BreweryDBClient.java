@@ -2,23 +2,23 @@ package com.brewerydb.api;
 
 import com.brewerydb.api.config.Configuration;
 import com.brewerydb.api.exception.MissingApiKeyException;
-import com.brewerydb.api.request.AddBeerRequest;
 import com.brewerydb.api.request.ApiRequest;
-import com.brewerydb.api.request.BeerRequest;
-import com.brewerydb.api.request.BeersRequest;
-import com.brewerydb.api.request.BreweriesRequest;
-import com.brewerydb.api.request.BreweryRequest;
-import com.brewerydb.api.request.FeaturesRequest;
-import com.brewerydb.api.request.UpdateBeerRequest;
-import com.brewerydb.api.result.AddBeerResult;
-import com.brewerydb.api.result.BeerResult;
-import com.brewerydb.api.result.BeersResult;
-import com.brewerydb.api.result.BreweriesResult;
-import com.brewerydb.api.result.BreweryResult;
-import com.brewerydb.api.result.DeleteBeerResult;
-import com.brewerydb.api.result.FeaturedResult;
-import com.brewerydb.api.result.FeaturesResult;
-import com.brewerydb.api.result.UpdateBeerResult;
+import com.brewerydb.api.request.beer.AddBeerRequest;
+import com.brewerydb.api.request.beer.GetBeerRequest;
+import com.brewerydb.api.request.beer.GetBeersRequest;
+import com.brewerydb.api.request.beer.UpdateBeerRequest;
+import com.brewerydb.api.request.brewery.GetBreweriesRequest;
+import com.brewerydb.api.request.brewery.GetBreweryRequest;
+import com.brewerydb.api.request.feature.FeaturesRequest;
+import com.brewerydb.api.result.beer.AddBeerResult;
+import com.brewerydb.api.result.beer.BeerResult;
+import com.brewerydb.api.result.beer.BeersResult;
+import com.brewerydb.api.result.beer.DeleteBeerResult;
+import com.brewerydb.api.result.beer.UpdateBeerResult;
+import com.brewerydb.api.result.brewery.BreweriesResult;
+import com.brewerydb.api.result.brewery.BreweryResult;
+import com.brewerydb.api.result.feature.FeaturedResult;
+import com.brewerydb.api.result.feature.FeaturesResult;
 import com.google.gson.Gson;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
@@ -45,7 +45,7 @@ public class BreweryDBClient {
         this.apiKey = apiKey;
     }
 
-    public BeersResult getBeers(BeersRequest request) {
+    public BeersResult getBeers(GetBeersRequest request) {
         return get(Configuration.BEERS_ENDPOINT, request, BeersResult.class);
     }
 
@@ -53,7 +53,7 @@ public class BreweryDBClient {
         return getBeer(id, null);
     }
 
-    public BeerResult getBeer(String id, BeerRequest request) {
+    public BeerResult getBeer(String id, GetBeerRequest request) {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to retrieve a beer.");
         }
@@ -81,7 +81,7 @@ public class BreweryDBClient {
         return delete(Configuration.BEER_ENDPOINT + "/" + id, DeleteBeerResult.class);
     }
 
-    public BreweriesResult getBreweries(BreweriesRequest query) {
+    public BreweriesResult getBreweries(GetBreweriesRequest query) {
         return get(Configuration.BREWERIES_ENDPOINT, query, BreweriesResult.class);
     }
 
@@ -89,7 +89,7 @@ public class BreweryDBClient {
         return getBrewery(id, null);
     }
 
-    public BreweryResult getBrewery(String id, BreweryRequest query) {
+    public BreweryResult getBrewery(String id, GetBreweryRequest query) {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to retrieve a brewery.");
         }

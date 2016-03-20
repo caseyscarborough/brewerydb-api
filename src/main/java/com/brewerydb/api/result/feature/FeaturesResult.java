@@ -1,6 +1,7 @@
-package com.brewerydb.api.result;
+package com.brewerydb.api.result.feature;
 
 import com.brewerydb.api.model.Feature;
+import com.brewerydb.api.result.AbstractResult;
 
 import java.util.List;
 

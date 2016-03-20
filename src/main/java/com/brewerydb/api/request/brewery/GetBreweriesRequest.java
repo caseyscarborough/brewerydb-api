@@ -1,13 +1,15 @@
-package com.brewerydb.api.request;
+package com.brewerydb.api.request.brewery;
 
 import com.brewerydb.api.model.Status;
-import com.brewerydb.api.request.order.BreweryOrder;
+import com.brewerydb.api.request.AbstractRequest;
+import com.brewerydb.api.request.MultipleResultRequestBuilder;
+import com.brewerydb.api.request.brewery.order.BreweryOrder;
 
 import java.util.Map;
 
-public class BreweriesRequest extends AbstractRequest {
+public class GetBreweriesRequest extends AbstractRequest {
 
-    private BreweriesRequest(Map<String, String> params) {
+    private GetBreweriesRequest(Map<String, String> params) {
         super(params);
     }
 
@@ -15,7 +17,7 @@ public class BreweriesRequest extends AbstractRequest {
         return new Builder();
     }
 
-    public static class Builder extends MultipleResultRequestBuilder<BreweriesRequest, BreweryOrder, Builder> {
+    public static class Builder extends MultipleResultRequestBuilder<GetBreweriesRequest, BreweryOrder, Builder> {
 
         private Builder() {
         }
@@ -51,8 +53,8 @@ public class BreweriesRequest extends AbstractRequest {
             return this;
         }
 
-        public BreweriesRequest build() {
-            return new BreweriesRequest(params);
+        public GetBreweriesRequest build() {
+            return new GetBreweriesRequest(params);
         }
     }
 }

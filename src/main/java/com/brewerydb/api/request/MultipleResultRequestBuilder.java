@@ -6,7 +6,9 @@ import com.brewerydb.api.request.sort.SortDirection;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-abstract class MultipleResultRequestBuilder<T, O extends Order, B extends MultipleResultRequestBuilder<T, O, B>> extends PagedRequestBuilder<T, B> {
+public abstract class MultipleResultRequestBuilder<T, O extends Order, B extends MultipleResultRequestBuilder<T, O, B>> extends PagedRequestBuilder<T, B> {
+
+    protected MultipleResultRequestBuilder() {}
 
     public B withName(String name) {
         params.put("name", name);

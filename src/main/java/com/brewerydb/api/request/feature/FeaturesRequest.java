@@ -1,4 +1,7 @@
-package com.brewerydb.api.request;
+package com.brewerydb.api.request.feature;
+
+import com.brewerydb.api.request.AbstractRequest;
+import com.brewerydb.api.request.PagedRequestBuilder;
 
 import java.util.Map;
 

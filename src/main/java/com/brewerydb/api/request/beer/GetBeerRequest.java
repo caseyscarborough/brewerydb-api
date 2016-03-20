@@ -1,11 +1,14 @@
-package com.brewerydb.api.request;
+package com.brewerydb.api.request.beer;
+
+import com.brewerydb.api.request.AbstractRequest;
+import com.brewerydb.api.request.AbstractRequestBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class BeerRequest extends AbstractRequest {
+public class GetBeerRequest extends AbstractRequest {
 
-    private BeerRequest(Map<String, String> params) {
+    private GetBeerRequest(Map<String, String> params) {
         super(params);
     }
 
@@ -13,7 +16,7 @@ public class BeerRequest extends AbstractRequest {
         return new Builder();
     }
 
-    public static class Builder extends AbstractRequestBuilder<BeerRequest> {
+    public static class Builder extends AbstractRequestBuilder<GetBeerRequest> {
 
         private Map<String, String> params = new HashMap<String, String>();
 
@@ -35,8 +38,8 @@ public class BeerRequest extends AbstractRequest {
             return this;
         }
 
-        public BeerRequest build() {
-            return new BeerRequest(params);
+        public GetBeerRequest build() {
+            return new GetBeerRequest(params);
         }
     }
 }

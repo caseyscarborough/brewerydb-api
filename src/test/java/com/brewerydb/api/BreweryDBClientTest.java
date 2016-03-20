@@ -3,21 +3,22 @@ package com.brewerydb.api;
 import com.brewerydb.api.exception.MissingApiKeyException;
 import com.brewerydb.api.exception.MissingRequestParameterException;
 import com.brewerydb.api.model.Status;
-import com.brewerydb.api.request.AddBeerRequest;
-import com.brewerydb.api.request.BeerRequest;
-import com.brewerydb.api.request.BeersRequest;
-import com.brewerydb.api.request.BreweriesRequest;
-import com.brewerydb.api.request.FeaturesRequest;
-import com.brewerydb.api.request.UpdateBeerRequest;
-import com.brewerydb.api.result.AddBeerResult;
-import com.brewerydb.api.result.BeerResult;
-import com.brewerydb.api.result.BeersResult;
-import com.brewerydb.api.result.BreweriesResult;
-import com.brewerydb.api.result.BreweryResult;
-import com.brewerydb.api.result.DeleteBeerResult;
-import com.brewerydb.api.result.FeaturedResult;
-import com.brewerydb.api.result.FeaturesResult;
-import com.brewerydb.api.result.UpdateBeerResult;
+import com.brewerydb.api.request.beer.AddBeerRequest;
+import com.brewerydb.api.request.beer.BeerRequest;
+import com.brewerydb.api.request.beer.GetBeerRequest;
+import com.brewerydb.api.request.beer.GetBeersRequest;
+import com.brewerydb.api.request.brewery.GetBreweriesRequest;
+import com.brewerydb.api.request.feature.FeaturesRequest;
+import com.brewerydb.api.request.beer.UpdateBeerRequest;
+import com.brewerydb.api.result.beer.AddBeerResult;
+import com.brewerydb.api.result.beer.BeerResult;
+import com.brewerydb.api.result.beer.BeersResult;
+import com.brewerydb.api.result.brewery.BreweriesResult;
+import com.brewerydb.api.result.brewery.BreweryResult;
+import com.brewerydb.api.result.beer.DeleteBeerResult;
+import com.brewerydb.api.result.feature.FeaturedResult;
+import com.brewerydb.api.result.feature.FeaturesResult;
+import com.brewerydb.api.result.beer.UpdateBeerResult;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,7 +55,7 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetBeers() throws Exception {
-        BeersRequest query = BeersRequest.builder().withName("Newcastle Brown Ale").build();
+        GetBeersRequest query = BeerRequest.getBeers().withName("Newcastle Brown Ale").build();
         BeersResult result = client.getBeers(query);
 
         assertTrue(result.wasSuccessful());
@@ -64,7 +65,7 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetBeersWithMoreQueryParameters() throws Exception {
-        BeersRequest query = BeersRequest.builder()
+        GetBeersRequest query = GetBeersRequest.builder()
                 .withName("Buzz Light")
                 .withAbv("5.5")
                 .withOrganic(true)
@@ -96,7 +97,7 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetBeerWithValidId() throws Exception {
-        BeerResult result = client.getBeer("7ET5OY", BeerRequest.builder().withBreweries().build());
+        BeerResult result = client.getBeer("7ET5OY", GetBeerRequest.builder().withBreweries().build());
 
         assertTrue(result.wasSuccessful());
         assertEquals("Newcastle Brown Ale", result.getData().getName());
@@ -105,7 +106,7 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetBeerWithInvalidId() throws Exception {
-        BeerResult result = client.getBeer("123", BeerRequest.builder().withBreweries().build());
+        BeerResult result = client.getBeer("123", GetBeerRequest.builder().withBreweries().build());
 
         assertFalse(result.wasSuccessful());
         assertEquals("The endpoint you requested could not be found", result.getErrorMessage());
@@ -113,7 +114,7 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetBreweries() throws Exception {
-        BreweriesRequest query = BreweriesRequest.builder().withName("SweetWater Brewing Company").build();
+        GetBreweriesRequest query = GetBreweriesRequest.builder().withName("SweetWater Brewing Company").build();
         BreweriesResult result = client.getBreweries(query);
 
         assertTrue(result.wasSuccessful());

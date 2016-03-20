@@ -1,6 +1,7 @@
-package com.brewerydb.api.request.order;
+package com.brewerydb.api.request.beer.order;
 
 import com.brewerydb.api.request.fields.BeerFields;
+import com.brewerydb.api.request.order.Order;
 
 public enum BeerOrder implements Order {
 
