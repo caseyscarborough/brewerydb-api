@@ -1,5 +1,7 @@
 package com.brewerydb.api.model;
 
+import java.util.Date;
+
 public class Location {
 
     private String id;
@@ -12,18 +14,18 @@ public class Location {
     private String hoursOfOperation;
     private Double latitude;
     private Double longitude;
-    private String isPrimary;
-    private String isPlanning;
-    private String isClosed;
-    private String openToPublic;
+    private Boolean isPrimary;
+    private Boolean isPlanning;
+    private Boolean isClosed;
+    private Boolean openToPublic;
     private String locationType;
     private String locationTypeDisplay;
     private String countryIsoCode;
     private String yearOpened;
-    private String status;
+    private Status status;
     private String statusDisplay;
-    private String createDate;
-    private String updateDate;
+    private Date createDate;
+    private Date updateDate;
     private Country country;
 
     public String getId() {
@@ -66,19 +68,19 @@ public class Location {
         return longitude;
     }
 
-    public String getIsPrimary() {
+    public Boolean isPrimary() {
         return isPrimary;
     }
 
-    public String getIsPlanning() {
+    public Boolean isPlanning() {
         return isPlanning;
     }
 
-    public String getIsClosed() {
+    public Boolean isClosed() {
         return isClosed;
     }
 
-    public String getOpenToPublic() {
+    public Boolean isOpenToPublic() {
         return openToPublic;
     }
 
@@ -98,7 +100,7 @@ public class Location {
         return yearOpened;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
@@ -106,11 +108,11 @@ public class Location {
         return statusDisplay;
     }
 
-    public String getCreateDate() {
+    public Date getCreateDate() {
         return createDate;
     }
 
-    public String getUpdateDate() {
+    public Date getUpdateDate() {
         return updateDate;
     }
 

@@ -1,5 +1,6 @@
 package com.brewerydb.api;
 
+import com.brewerydb.api.json.GsonFactory;
 import com.brewerydb.api.result.Result;
 import com.google.gson.Gson;
 import com.ning.http.client.AsyncCompletionHandler;
@@ -27,7 +28,7 @@ class TestBreweryDBClient extends BreweryDBClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestBreweryDBClient.class);
     private static final long CACHE_TIME = 1000 * 60 * 60 * 24; // 1 day
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonFactory().getInstance();
 
     public TestBreweryDBClient(String apiKey) {
         super(apiKey);

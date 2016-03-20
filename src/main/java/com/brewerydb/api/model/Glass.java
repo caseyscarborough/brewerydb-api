@@ -1,9 +1,12 @@
 package com.brewerydb.api.model;
 
+import java.util.Date;
+
 public class Glass {
 
     private Long id;
     private String name;
+    private Date createDate;
 
     public Long getId() {
         return id;
@@ -11,5 +14,9 @@ public class Glass {
 
     public String getName() {
         return name;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
     }
 }

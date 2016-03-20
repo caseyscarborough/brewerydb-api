@@ -3,6 +3,7 @@ package com.brewerydb.api;
 import com.brewerydb.api.config.Configuration;
 import com.brewerydb.api.exception.BreweryDBException;
 import com.brewerydb.api.exception.MissingApiKeyException;
+import com.brewerydb.api.json.GsonFactory;
 import com.brewerydb.api.request.ApiRequest;
 import com.brewerydb.api.request.beer.AddBeerRequest;
 import com.brewerydb.api.request.beer.GetBeerRequest;
@@ -82,7 +83,7 @@ public class BreweryDBClient {
     private static final String RATELIMIT_REMAINING_HEADER = "X-Ratelimit-Remaining";
 
     private final String apiKey;
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonFactory().getInstance();
 
     /**
      * Constructor for {@link BreweryDBClient}.
@@ -230,6 +231,7 @@ public class BreweryDBClient {
 
     /**
      * Returns a random beer matching a criteria.
+     *
      * @param request The request criteria.
      * @return {@link GetRandomBeerResult} - The {@link Result} containing a random beer.
      */
@@ -383,7 +385,10 @@ public class BreweryDBClient {
                 throw new IllegalStateException(method.name() + " has not been implemented");
         }
 
-        addCommonParameters(builder);
+        builder
+            .setFollowRedirects(true)
+            .addQueryParam("key", apiKey)
+            .addQueryParam("format", "json");
 
         if (method == RequestMethod.GET) {
             if (request != null) {
@@ -418,13 +423,6 @@ public class BreweryDBClient {
                 return result;
             }
         });
-    }
-
-    private void addCommonParameters(AsyncHttpClient.BoundRequestBuilder builder) {
-        builder
-            .setFollowRedirects(true)
-            .addQueryParam("key", apiKey)
-            .addQueryParam("format", "json");
     }
 
     protected <T extends Result> void validateResult(T result) {

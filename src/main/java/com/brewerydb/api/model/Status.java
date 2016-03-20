@@ -6,7 +6,8 @@ public enum Status {
     NEW_VERIFIED("new_verified"),
     UPDATE_PENDING("update_pending"),
     DELETE_PENDING("delete_pending"),
-    DELETED("deleted");
+    DELETED("deleted"),
+    UNKNOWN("unknown");
 
     private final String name;
 
@@ -16,5 +17,14 @@ public enum Status {
 
     public String getName() {
         return name;
+    }
+
+    public static Status findByName(String name) {
+        for (Status value : values()) {
+            if (value.getName().equals(name)) {
+                return value;
+            }
+        }
+        return UNKNOWN;
     }
 }

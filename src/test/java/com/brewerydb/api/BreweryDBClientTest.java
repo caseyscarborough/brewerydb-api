@@ -5,6 +5,7 @@ import com.brewerydb.api.exception.MissingApiKeyException;
 import com.brewerydb.api.exception.MissingRequestParameterException;
 import com.brewerydb.api.model.Beer;
 import com.brewerydb.api.model.Brewery;
+import com.brewerydb.api.model.Feature;
 import com.brewerydb.api.model.Status;
 import com.brewerydb.api.request.ApiRequest;
 import com.brewerydb.api.request.beer.AddBeerRequest;
@@ -88,8 +89,11 @@ public class BreweryDBClientTest {
         GetBeersResult result = client.getBeers(query);
         assertTrue(result.wasSuccessful());
         assertEquals(1, result.getData().size());
-        assertEquals("Buzz Light", result.getData().get(0).getName());
 
+        Beer beer = result.getData().get(0);
+        assertEquals("Buzz Light", beer.getName());
+        assertEquals((Double) 5.5, beer.getAbv());
+        assertEquals(Status.VERIFIED, beer.getStatus());
     }
 
     @Test
@@ -106,6 +110,7 @@ public class BreweryDBClientTest {
         assertTrue(result.getMessage().contains("Request Successful"));
         assertEquals("Newcastle Brown Ale", result.getData().getName());
         assertEquals("English Brown", result.getData().getStyle().getShortName());
+        assertEquals(1325576625000L, result.getData().getCreateDate().getTime());
     }
 
     @Test
@@ -113,8 +118,12 @@ public class BreweryDBClientTest {
         GetBeerResult result = client.getBeer("7ET5OY", BeerRequest.getBeer().withBreweries().build());
 
         assertTrue(result.wasSuccessful());
-        assertEquals("Newcastle Brown Ale", result.getData().getName());
-        assertEquals("English Brown", result.getData().getStyle().getShortName());
+
+        Beer beer = result.getData();
+        assertEquals("Newcastle Brown Ale", beer.getName());
+        assertEquals("English Brown", beer.getStyle().getShortName());
+        assertEquals(1325576625000L, beer.getCreateDate().getTime());
+        assertEquals(Status.VERIFIED, beer.getStatus());
     }
 
     @Test
@@ -131,7 +140,11 @@ public class BreweryDBClientTest {
 
         assertTrue(result.wasSuccessful());
         assertEquals(1, result.getData().size());
-        assertEquals("SweetWater Brewing Company", result.getData().get(0).getName());
+
+        Brewery brewery = result.getData().get(0);
+        assertEquals("SweetWater Brewing Company", brewery.getName());
+        assertEquals(1325576529000L, brewery.getCreateDate().getTime());
+        assertEquals(Status.VERIFIED, brewery.getStatus());
     }
 
     @Test
@@ -140,7 +153,11 @@ public class BreweryDBClientTest {
 
         assertTrue(result.wasSuccessful());
         assertTrue(result.getMessage().contains("Request Successful"));
-        assertEquals("SweetWater Brewing Company", result.getData().getName());
+
+        Brewery brewery = result.getData();
+        assertEquals("SweetWater Brewing Company", brewery.getName());
+        assertEquals(1325576529000L, brewery.getCreateDate().getTime());
+        assertEquals(Status.VERIFIED, brewery.getStatus());
     }
 
     @Test
@@ -155,12 +172,30 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetFeatures() throws Exception {
-        GetFeaturesRequest query = FeatureRequest.getFeatures().withYear("2015").withWeek(5).build();
-        FeaturesResult result = client.getFeatures(query);
+        FeaturesResult result = client.getFeatures();
 
+        List<Feature> features = result.getData();
+        assertTrue(features.size() > 0);
+    }
+
+    @Test
+    public void testGetFeaturesWithCriteria() throws Exception {
+        GetFeaturesRequest query = FeatureRequest.getFeatures()
+            .withYear("2015")
+            .withWeek(5)
+            .build();
+
+        FeaturesResult result = client.getFeatures(query);
         assertTrue(result.wasSuccessful());
-        assertEquals(2, result.getData().size());
-        assertEquals("Seven Barrel Brewery", result.getData().get(1).getBrewery().getName());
+
+        List<Feature> features = result.getData();
+        assertEquals(2, features.size());
+
+        Feature feature = features.get(1);
+        assertEquals("Seven Barrel Brewery", feature.getBrewery().getName());
+        assertEquals("2015", feature.getYear());
+        assertEquals(5, (int) feature.getWeek());
+        assertEquals("FrostNipper", feature.getBeer().getName());
     }
 
     @Test
@@ -220,16 +255,26 @@ public class BreweryDBClientTest {
         GetRandomBeerResult result = client.getRandomBeer();
 
         assertTrue(result.wasSuccessful());
-        assertNotNull(result.getData());
-        assertTrue(result.getData() instanceof Beer);
+
+        Beer beer = result.getData();
+        assertNotNull(beer);
     }
 
     @Test
     public void testGetRandomBeerMatchingCriteria() throws Exception {
-        GetRandomBeerRequest request = BeerRequest.getRandomBeer().withAbv("8,10").withStyleId(121).build();
-        GetRandomBeerResult result = client.getRandomBeer(request);
+        GetRandomBeerRequest request = BeerRequest.getRandomBeer()
+            .withAbv("8,10")
+            .withStyleId(121)
+            .withGlasswareId(5)
+            .build();
 
+        GetRandomBeerResult result = client.getRandomBeer(request);
         assertTrue(result.wasSuccessful());
-        assertNotNull(result.getData());
+
+        Beer beer = result.getData();
+        assertNotNull(beer);
+        assertTrue(beer.getAbv() > 8 && beer.getAbv() < 10);
+        assertEquals(121, (long) beer.getStyle().getId());
+        assertEquals(5L, (long) beer.getGlass().getId());
     }
 }

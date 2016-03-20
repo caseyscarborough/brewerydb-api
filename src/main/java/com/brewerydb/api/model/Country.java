@@ -1,5 +1,7 @@
 package com.brewerydb.api.model;
 
+import java.util.Date;
+
 public class Country {
 
     private String isoCode;
@@ -7,7 +9,7 @@ public class Country {
     private String displayName;
     private String isoThree;
     private Integer numberCode;
-    private String createDate;
+    private Date createDate;
 
     public String getIsoCode() {
         return isoCode;
@@ -29,7 +31,7 @@ public class Country {
         return numberCode;
     }
 
-    public String getCreateDate() {
+    public Date getCreateDate() {
         return createDate;
     }
 }

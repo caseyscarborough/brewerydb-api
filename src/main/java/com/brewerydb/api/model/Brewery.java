@@ -1,5 +1,6 @@
 package com.brewerydb.api.model;
 
+import java.util.Date;
 import java.util.List;
 
 public class Brewery {
@@ -9,11 +10,11 @@ public class Brewery {
     private String nameShortDisplay;
     private String website;
     private String established;
-    private String isOrganic;
-    private String status;
+    private Boolean isOrganic;
+    private Status status;
     private String statusDisplay;
-    private String createDate;
-    private String updateDate;
+    private Date createDate;
+    private Date updateDate;
     private BreweryImages images;
     private List<Location> locations;
 
@@ -37,11 +38,11 @@ public class Brewery {
         return established;
     }
 
-    public String getIsOrganic() {
+    public Boolean getIsOrganic() {
         return isOrganic;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
@@ -49,11 +50,11 @@ public class Brewery {
         return statusDisplay;
     }
 
-    public String getCreateDate() {
+    public Date getCreateDate() {
         return createDate;
     }
 
-    public String getUpdateDate() {
+    public Date getUpdateDate() {
         return updateDate;
     }
 
