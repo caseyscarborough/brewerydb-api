@@ -17,6 +17,7 @@ import com.brewerydb.api.result.FeaturesResult;
 import com.google.gson.Gson;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.Request;
 import com.ning.http.client.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,6 @@ public class BreweryDBClient {
     }
 
     private <T> T get(final String endpoint, final Query query, final Class<T> clazz) {
-        LOGGER.debug("Performing GET request to endpoint " + endpoint);
         AsyncHttpClient client = new AsyncHttpClient();
         AsyncHttpClient.BoundRequestBuilder builder = client.prepareGet(endpoint)
                 .setFollowRedirects(true)
@@ -89,14 +89,20 @@ public class BreweryDBClient {
             }
         }
 
+        LOGGER.debug("Performing GET request to endpoint " + endpoint);
+        String json = makeRequest(client, builder.build());
+        return GSON.fromJson(json, clazz);
+    }
+
+    protected String makeRequest(AsyncHttpClient client, Request request) {
         final long start = System.currentTimeMillis();
-        Future<T> f = builder.execute(new AsyncCompletionHandler<T>() {
+        Future<String> f = client.executeRequest(request, new AsyncCompletionHandler<String>() {
             @Override
-            public T onCompleted(Response response) throws Exception {
+            public String onCompleted(Response response) throws Exception {
                 // TODO: Figure out a good way to handle rate-limiting...
                 LOGGER.debug("Request time: {}", System.currentTimeMillis() - start);
                 LOGGER.debug("Rate limit remaining: {}", response.getHeader("X-Ratelimit-Remaining"));
-                return GSON.fromJson(response.getResponseBody(), clazz);
+                return response.getResponseBody();
             }
         });
 

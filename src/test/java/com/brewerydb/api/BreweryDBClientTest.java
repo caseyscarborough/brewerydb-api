@@ -31,19 +31,19 @@ public class BreweryDBClientTest {
 
     @Before
     public void setUp() throws Exception {
-        client = new BreweryDBClient(TestProperties.getApiKey());
+        client = new TestBreweryDBClient(TestProperties.getApiKey());
     }
 
     @Test
     public void testNullApiKeyNotAllowed() throws Exception {
         expectedException.expect(MissingApiKeyException.class);
-        client = new BreweryDBClient(null);
+        client = new TestBreweryDBClient(null);
     }
 
     @Test
     public void testBlankApiKeyNotAllowed() throws Exception {
         expectedException.expect(MissingApiKeyException.class);
-        client = new BreweryDBClient("  ");
+        client = new TestBreweryDBClient("  ");
     }
 
     @Test
