@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class TestProperties {
+class TestProperties {
 
     private static final String TEST_CONSTANTS_FILE = "test.properties";
     private static final String API_KEY_PROPERTY = "apiKey";

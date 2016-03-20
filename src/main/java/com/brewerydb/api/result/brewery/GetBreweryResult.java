@@ -3,5 +3,5 @@ package com.brewerydb.api.result.brewery;
 import com.brewerydb.api.model.Brewery;
 import com.brewerydb.api.result.AbstractResult;
 
-public class BreweryResult extends AbstractResult<Brewery> {
+public class GetBreweryResult extends AbstractResult<Brewery> {
 }

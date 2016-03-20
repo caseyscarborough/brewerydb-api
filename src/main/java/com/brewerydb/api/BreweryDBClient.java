@@ -1,6 +1,7 @@
 package com.brewerydb.api;
 
 import com.brewerydb.api.config.Configuration;
+import com.brewerydb.api.exception.BreweryDBException;
 import com.brewerydb.api.exception.MissingApiKeyException;
 import com.brewerydb.api.request.ApiRequest;
 import com.brewerydb.api.request.beer.AddBeerRequest;
@@ -9,14 +10,16 @@ import com.brewerydb.api.request.beer.GetBeersRequest;
 import com.brewerydb.api.request.beer.UpdateBeerRequest;
 import com.brewerydb.api.request.brewery.GetBreweriesRequest;
 import com.brewerydb.api.request.brewery.GetBreweryRequest;
-import com.brewerydb.api.request.feature.FeaturesRequest;
+import com.brewerydb.api.request.feature.GetFeaturesRequest;
+import com.brewerydb.api.result.GetRandomBeerResult;
+import com.brewerydb.api.result.Result;
 import com.brewerydb.api.result.beer.AddBeerResult;
-import com.brewerydb.api.result.beer.BeerResult;
-import com.brewerydb.api.result.beer.BeersResult;
 import com.brewerydb.api.result.beer.DeleteBeerResult;
+import com.brewerydb.api.result.beer.GetBeerResult;
+import com.brewerydb.api.result.beer.GetBeersResult;
 import com.brewerydb.api.result.beer.UpdateBeerResult;
-import com.brewerydb.api.result.brewery.BreweriesResult;
-import com.brewerydb.api.result.brewery.BreweryResult;
+import com.brewerydb.api.result.brewery.GetBreweriesResult;
+import com.brewerydb.api.result.brewery.GetBreweryResult;
 import com.brewerydb.api.result.feature.FeaturedResult;
 import com.brewerydb.api.result.feature.FeaturesResult;
 import com.google.gson.Gson;
@@ -33,10 +36,10 @@ import java.util.concurrent.Future;
 public class BreweryDBClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BreweryDBClient.class);
-    private static final Gson GSON = new Gson();
     private static final String RATELIMIT_REMAINING_HEADER = "X-Ratelimit-Remaining";
 
     private final String apiKey;
+    private final Gson gson = new Gson();
 
     public BreweryDBClient(String apiKey) {
         if (apiKey == null || apiKey.trim().equals("")) {
@@ -45,145 +48,155 @@ public class BreweryDBClient {
         this.apiKey = apiKey;
     }
 
-    public BeersResult getBeers(GetBeersRequest request) {
-        return get(Configuration.BEERS_ENDPOINT, request, BeersResult.class);
+    public GetBeersResult getBeers(GetBeersRequest request) {
+        return request(Configuration.BEERS_ENDPOINT, request, GetBeersResult.class, RequestType.GET);
     }
 
-    public BeerResult getBeer(String id) {
+    public GetBeerResult getBeer(String id) {
         return getBeer(id, null);
     }
 
-    public BeerResult getBeer(String id, GetBeerRequest request) {
+    public GetBeerResult getBeer(String id, GetBeerRequest request) {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to retrieve a beer.");
         }
-        return get(Configuration.BEER_ENDPOINT + "/" + id, request, BeerResult.class);
+        return request(Configuration.BEER_ENDPOINT + "/" + id, request, GetBeerResult.class, RequestType.GET);
     }
 
     public AddBeerResult addBeer(AddBeerRequest request) {
         if (request == null) {
             throw new IllegalArgumentException("Request parameter is required to add a beer.");
         }
-        return post(Configuration.BEERS_ENDPOINT, request, AddBeerResult.class);
+        return request(Configuration.BEERS_ENDPOINT, request, AddBeerResult.class, RequestType.POST);
     }
 
     public UpdateBeerResult updateBeer(String id, UpdateBeerRequest request) {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to update a beer.");
         }
-        return put(Configuration.BEER_ENDPOINT + "/" + id, request, UpdateBeerResult.class);
+        return request(Configuration.BEER_ENDPOINT + "/" + id, request, UpdateBeerResult.class, RequestType.PUT);
     }
 
     public DeleteBeerResult deleteBeer(String id) {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to delete a beer.");
         }
-        return delete(Configuration.BEER_ENDPOINT + "/" + id, DeleteBeerResult.class);
+        return request(Configuration.BEER_ENDPOINT + "/" + id, null, DeleteBeerResult.class, RequestType.DELETE);
     }
 
-    public BreweriesResult getBreweries(GetBreweriesRequest query) {
-        return get(Configuration.BREWERIES_ENDPOINT, query, BreweriesResult.class);
+    public GetRandomBeerResult getRandomBeer() {
+        return request(Configuration.RANDOM_BEER_ENDPOINT, null, GetRandomBeerResult.class, RequestType.GET);
     }
 
-    public BreweryResult getBrewery(String id) {
+    public GetBreweriesResult getBreweries(GetBreweriesRequest query) {
+        return request(Configuration.BREWERIES_ENDPOINT, query, GetBreweriesResult.class, RequestType.GET);
+    }
+
+    public GetBreweryResult getBrewery(String id) {
         return getBrewery(id, null);
     }
 
-    public BreweryResult getBrewery(String id, GetBreweryRequest query) {
+    public GetBreweryResult getBrewery(String id, GetBreweryRequest query) {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to retrieve a brewery.");
         }
-        return get(Configuration.BREWERY_ENDPOINT + "/" + id, query, BreweryResult.class);
+        return request(Configuration.BREWERY_ENDPOINT + "/" + id, query, GetBreweryResult.class, RequestType.GET);
     }
 
     public FeaturedResult getFeatured() {
-        return get(Configuration.FEATURED_ENDPOINT, null, FeaturedResult.class);
+        return request(Configuration.FEATURED_ENDPOINT, null, FeaturedResult.class, RequestType.GET);
     }
 
     public FeaturesResult getFeatures() {
         return getFeatures(null);
     }
 
-    public FeaturesResult getFeatures(FeaturesRequest query) {
-        return get(Configuration.FEATURES_ENDPOINT, query, FeaturesResult.class);
+    public FeaturesResult getFeatures(GetFeaturesRequest query) {
+        return request(Configuration.FEATURES_ENDPOINT, query, FeaturesResult.class, RequestType.GET);
     }
 
-    private <T> T delete(final String endpoint, final Class<T> clazz) {
-        AsyncHttpClient client = new AsyncHttpClient();
-        AsyncHttpClient.BoundRequestBuilder builder = client.prepareDelete(endpoint);
-        addCommonParameters(builder);
-        String json = performRequest(client, builder.build());
-        return GSON.fromJson(json, clazz);
+    private enum RequestType {
+        GET, POST, PUT, DELETE;
     }
 
-    private <T> T put(final String endpoint, final ApiRequest request, final Class<T> clazz) {
-        AsyncHttpClient client = new AsyncHttpClient();
-        AsyncHttpClient.BoundRequestBuilder builder = client.preparePut(endpoint);
-        LOGGER.debug("Performing PUT request to endpoint " + endpoint);
-        String json = performPostOrPutRequest(client, builder, request);
-        return GSON.fromJson(json, clazz);
-    }
-
-    private <T> T post(final String endpoint, final ApiRequest request, final Class<T> clazz) {
-        AsyncHttpClient client = new AsyncHttpClient();
-        AsyncHttpClient.BoundRequestBuilder builder = client.preparePost(endpoint);
-        LOGGER.debug("Performing POST request to endpoint " + endpoint);
-        String json = performPostOrPutRequest(client, builder, request);
-        return GSON.fromJson(json, clazz);
-    }
-
-    private <T> T get(final String endpoint, final ApiRequest request, final Class<T> clazz) {
-        AsyncHttpClient client = new AsyncHttpClient();
-        AsyncHttpClient.BoundRequestBuilder builder = client.prepareGet(endpoint);
-        addCommonParameters(builder);
-        if (request != null) {
-            for (String key : request.getParams().keySet()) {
-                String value = request.getParams().get(key);
-                LOGGER.debug("Adding request parameter: " + key + "=" + value);
-                builder.addQueryParam(key, value);
-            }
-        }
-
-        LOGGER.debug("Performing GET request to endpoint " + endpoint);
-        String json = performRequest(client, builder.build());
-        return GSON.fromJson(json, clazz);
-    }
-
-    private String performPostOrPutRequest(AsyncHttpClient client, AsyncHttpClient.BoundRequestBuilder builder, ApiRequest request) {
-        addCommonParameters(builder);
-        if (request != null) {
-            for (String key : request.getParams().keySet()) {
-                String value = request.getParams().get(key);
-                LOGGER.debug("Adding form parameter: " + key + "=" + value);
-                builder.addFormParam(key, value);
-            }
-        }
-
-        return performRequest(client, builder.build());
-    }
-
-    protected String performRequest(AsyncHttpClient client, Request request) {
-        final long start = System.currentTimeMillis();
-        Future<String> f = client.executeRequest(request, new AsyncCompletionHandler<String>() {
-            @Override
-            public String onCompleted(Response response) throws Exception {
-                // TODO: Figure out a good way to handle rate-limiting...
-                LOGGER.debug("Request time: {}", System.currentTimeMillis() - start);
-                LOGGER.debug("Rate limit remaining: {}", response.getHeader(RATELIMIT_REMAINING_HEADER));
-                return response.getResponseBody();
-            }
-        });
+    private <T extends Result> T request(final String endpoint, final ApiRequest request, final Class<T> clazz, final RequestType requestType) {
+        Future<T> f = requestAsync(endpoint, request, clazz, requestType);
 
         try {
             return f.get();
         } catch (InterruptedException e) {
-            throw new RuntimeException("An error occurred retrieving results from API", e);
+            throw new BreweryDBException(e.getMessage());
         } catch (ExecutionException e) {
-            throw new RuntimeException("An error occurred retrieving results from API", e);
+            throw new BreweryDBException(e.getMessage());
         }
     }
 
+    private <T extends Result> Future<T> requestAsync(final String endpoint, final ApiRequest request, final Class<T> clazz, final RequestType requestType) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        AsyncHttpClient.BoundRequestBuilder builder;
+
+        switch (requestType) {
+            case GET:
+                builder = client.prepareGet(endpoint);
+                break;
+            case POST:
+                builder = client.preparePost(endpoint);
+                break;
+            case PUT:
+                builder = client.preparePut(endpoint);
+                break;
+            case DELETE:
+                builder = client.prepareDelete(endpoint);
+                break;
+            default:
+                throw new IllegalStateException(requestType.name() + " has not been implemented");
+        }
+
+        addCommonParameters(builder);
+
+        if (requestType == RequestType.GET) {
+            if (request != null) {
+                for (String key : request.getParams().keySet()) {
+                    String value = request.getParams().get(key);
+                    LOGGER.debug("Adding request parameter: {}={}", key, value);
+                    builder.addQueryParam(key, value);
+                }
+            }
+        } else if (requestType == RequestType.POST || requestType == RequestType.PUT) {
+            if (request != null) {
+                for (String key : request.getParams().keySet()) {
+                    String value = request.getParams().get(key);
+                    LOGGER.debug("Adding form parameter: {}={}", key, value);
+                    builder.addFormParam(key, value);
+                }
+            }
+        }
+
+        LOGGER.debug("Performing {} request to endpoint {}", requestType.name(), endpoint);
+        return performRequestAsync(client, builder.build(), clazz);
+    }
+
+    protected <T extends Result> Future<T> performRequestAsync(AsyncHttpClient client, Request request, final Class<T> clazz) {
+        return client.executeRequest(request, new AsyncCompletionHandler<T>() {
+            @Override
+            public T onCompleted(Response response) throws Exception {
+                T result = gson.fromJson(response.getContentType(), clazz);
+                validateResult(result);
+                return result;
+            }
+        });
+    }
+
     private void addCommonParameters(AsyncHttpClient.BoundRequestBuilder builder) {
-        builder.setFollowRedirects(true).addQueryParam("key", apiKey).addQueryParam("format", "json");
+        builder
+            .setFollowRedirects(true)
+            .addQueryParam("key", apiKey)
+            .addQueryParam("format", "json");
+    }
+
+    protected <T extends Result> void validateResult(Result<T> result) {
+        if (!result.wasSuccessful()) {
+            throw new BreweryDBException(result.getErrorMessage());
+        }
     }
 }

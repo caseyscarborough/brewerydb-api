@@ -3,8 +3,8 @@ package com.brewerydb.api.request.beer;
 import com.brewerydb.api.model.Status;
 import com.brewerydb.api.request.AbstractRequest;
 import com.brewerydb.api.request.MultipleResultRequestBuilder;
-import com.brewerydb.api.request.fields.BeerFields;
 import com.brewerydb.api.request.beer.order.BeerOrder;
+import com.brewerydb.api.request.fields.BeerFields;
 
 import java.util.Map;
 

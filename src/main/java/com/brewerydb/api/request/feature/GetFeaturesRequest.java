@@ -5,9 +5,9 @@ import com.brewerydb.api.request.PagedRequestBuilder;
 
 import java.util.Map;
 
-public class FeaturesRequest extends AbstractRequest {
+public class GetFeaturesRequest extends AbstractRequest {
 
-    private FeaturesRequest(Map<String, String> params) {
+    private GetFeaturesRequest(Map<String, String> params) {
         super(params);
     }
 
@@ -15,7 +15,7 @@ public class FeaturesRequest extends AbstractRequest {
         return new Builder();
     }
 
-    public static class Builder extends PagedRequestBuilder<FeaturesRequest, Builder> {
+    public static class Builder extends PagedRequestBuilder<GetFeaturesRequest, Builder> {
 
         private Builder() {}
 
@@ -34,8 +34,8 @@ public class FeaturesRequest extends AbstractRequest {
             return this;
         }
 
-        public FeaturesRequest build() {
-            return new FeaturesRequest(params);
+        public GetFeaturesRequest build() {
+            return new GetFeaturesRequest(params);
         }
     }
 }

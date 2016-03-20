@@ -1,24 +1,27 @@
 package com.brewerydb.api;
 
+import com.brewerydb.api.exception.BreweryDBException;
 import com.brewerydb.api.exception.MissingApiKeyException;
 import com.brewerydb.api.exception.MissingRequestParameterException;
+import com.brewerydb.api.model.Beer;
 import com.brewerydb.api.model.Status;
 import com.brewerydb.api.request.beer.AddBeerRequest;
 import com.brewerydb.api.request.beer.BeerRequest;
 import com.brewerydb.api.request.beer.GetBeerRequest;
 import com.brewerydb.api.request.beer.GetBeersRequest;
-import com.brewerydb.api.request.brewery.GetBreweriesRequest;
-import com.brewerydb.api.request.feature.FeaturesRequest;
 import com.brewerydb.api.request.beer.UpdateBeerRequest;
+import com.brewerydb.api.request.brewery.GetBreweriesRequest;
+import com.brewerydb.api.request.feature.GetFeaturesRequest;
+import com.brewerydb.api.result.GetRandomBeerResult;
 import com.brewerydb.api.result.beer.AddBeerResult;
-import com.brewerydb.api.result.beer.BeerResult;
-import com.brewerydb.api.result.beer.BeersResult;
-import com.brewerydb.api.result.brewery.BreweriesResult;
-import com.brewerydb.api.result.brewery.BreweryResult;
+import com.brewerydb.api.result.beer.GetBeerResult;
+import com.brewerydb.api.result.beer.GetBeersResult;
 import com.brewerydb.api.result.beer.DeleteBeerResult;
+import com.brewerydb.api.result.beer.UpdateBeerResult;
+import com.brewerydb.api.result.brewery.GetBreweriesResult;
+import com.brewerydb.api.result.brewery.GetBreweryResult;
 import com.brewerydb.api.result.feature.FeaturedResult;
 import com.brewerydb.api.result.feature.FeaturesResult;
-import com.brewerydb.api.result.beer.UpdateBeerResult;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -56,7 +59,7 @@ public class BreweryDBClientTest {
     @Test
     public void testGetBeers() throws Exception {
         GetBeersRequest query = BeerRequest.getBeers().withName("Newcastle Brown Ale").build();
-        BeersResult result = client.getBeers(query);
+        GetBeersResult result = client.getBeers(query);
 
         assertTrue(result.wasSuccessful());
         assertEquals("Newcastle Brown Ale", result.getData().get(0).getName());
@@ -72,10 +75,10 @@ public class BreweryDBClientTest {
                 .withStatus(Status.VERIFIED)
                 .build();
 
-        BeersResult beersResult = client.getBeers(query);
-        assertTrue(beersResult.wasSuccessful());
-        assertEquals(1, beersResult.getData().size());
-        assertEquals("Buzz Light", beersResult.getData().get(0).getName());
+        GetBeersResult result = client.getBeers(query);
+        assertTrue(result.wasSuccessful());
+        assertEquals(1, result.getData().size());
+        assertEquals("Buzz Light", result.getData().get(0).getName());
 
     }
 
@@ -87,7 +90,7 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetBeerSimple() throws Exception {
-        BeerResult result = client.getBeer("7ET5OY");
+        GetBeerResult result = client.getBeer("7ET5OY");
 
         assertTrue(result.wasSuccessful());
         assertTrue(result.getMessage().contains("Request Successful"));
@@ -97,7 +100,7 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetBeerWithValidId() throws Exception {
-        BeerResult result = client.getBeer("7ET5OY", GetBeerRequest.builder().withBreweries().build());
+        GetBeerResult result = client.getBeer("7ET5OY", GetBeerRequest.builder().withBreweries().build());
 
         assertTrue(result.wasSuccessful());
         assertEquals("Newcastle Brown Ale", result.getData().getName());
@@ -106,16 +109,15 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetBeerWithInvalidId() throws Exception {
-        BeerResult result = client.getBeer("123", GetBeerRequest.builder().withBreweries().build());
-
-        assertFalse(result.wasSuccessful());
-        assertEquals("The endpoint you requested could not be found", result.getErrorMessage());
+        expectedException.expect(BreweryDBException.class);
+        expectedException.expectMessage("The endpoint you requested could not be found");
+        client.getBeer("123", GetBeerRequest.builder().withBreweries().build());
     }
 
     @Test
     public void testGetBreweries() throws Exception {
         GetBreweriesRequest query = GetBreweriesRequest.builder().withName("SweetWater Brewing Company").build();
-        BreweriesResult result = client.getBreweries(query);
+        GetBreweriesResult result = client.getBreweries(query);
 
         assertTrue(result.wasSuccessful());
         assertEquals(1, result.getData().size());
@@ -124,7 +126,7 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetBrewerySimple() throws Exception {
-        BreweryResult result = client.getBrewery("TMc6H2");
+        GetBreweryResult result = client.getBrewery("TMc6H2");
 
         assertTrue(result.wasSuccessful());
         assertTrue(result.getMessage().contains("Request Successful"));
@@ -143,7 +145,7 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetFeatures() throws Exception {
-        FeaturesRequest query = FeaturesRequest.builder().withYear("2015").withWeek(5).build();
+        GetFeaturesRequest query = GetFeaturesRequest.builder().withYear("2015").withWeek(5).build();
         FeaturesResult result = client.getFeatures(query);
 
         assertTrue(result.wasSuccessful());
@@ -201,5 +203,14 @@ public class BreweryDBClientTest {
         DeleteBeerResult result = client.deleteBeer("jUYZMk");
         assertTrue(result.wasSuccessful());
         assertTrue(result.getMessage().contains("The request to remove this beer has been received and is waiting to be approved by our administrators."));
+    }
+
+    @Test
+    public void testGetRandomBeer() throws Exception {
+        GetRandomBeerResult result = client.getRandomBeer();
+
+        assertTrue(result.wasSuccessful());
+        assertNotNull(result.getData());
+        assertTrue(result.getData() instanceof Beer);
     }
 }
