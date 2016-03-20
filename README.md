@@ -86,3 +86,5 @@ Future<GetRandomBeerResult> future = client.getRandomBeerAsync();
 GetRandomBeerResult result = future.get();
 Beer beer = result.getData();
 ```
+
+For a full list of methods see the [BreweryDBClient](https://github.com/caseyscarborough/brewerydb-api/blob/master/src/main/java/com/brewerydb/api/BreweryDBClient.java) class.
