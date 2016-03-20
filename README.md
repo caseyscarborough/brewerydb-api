@@ -23,7 +23,7 @@ GetBeersRequest request = BeerRequest.getBeers()
             .withName("Newcastle*")
             .withBreweries()
             .withOrder(BeerOrder.NAME)
-            .withSort(SortDirection.DESCENDING)
+            .withSort(SortDirection.DESC)
             .build();
 
 GetBeersResult result = client.getBeers(request);
@@ -59,7 +59,7 @@ GetBreweriesRequest request = BreweryRequest.getBreweries()
     .withName("*")
     .withEstablished("2016")
     .withOrder(BreweryOrder.NAME)
-    .withSort(SortDirection.ASCENDING)
+    .withSort(SortDirection.ASC)
     .withLocations()
     .build();
 

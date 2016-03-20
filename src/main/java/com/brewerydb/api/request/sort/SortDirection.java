@@ -2,8 +2,8 @@ package com.brewerydb.api.request.sort;
 
 public enum SortDirection {
 
-    ASCENDING("ASC"),
-    DESCENDING("DESC");
+    ASC("ASC"),
+    DESC("DESC");
 
     private final String name;
 
