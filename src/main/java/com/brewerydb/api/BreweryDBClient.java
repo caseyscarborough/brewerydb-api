@@ -246,7 +246,7 @@ public class BreweryDBClient {
             .addQueryParam("format", "json");
     }
 
-    protected <T extends Result> void validateResult(Result<T> result) {
+    protected <T extends Result> void validateResult(T result) {
         if (!result.wasSuccessful()) {
             throw new BreweryDBException(result.getErrorMessage());
         }
