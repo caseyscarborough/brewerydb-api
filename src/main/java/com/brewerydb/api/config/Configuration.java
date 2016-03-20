@@ -1,5 +1,8 @@
 package com.brewerydb.api.config;
 
+/**
+ * Items used for configuration of the client.
+ */
 public class Configuration {
 
     private static final String API_VERSION = "v2";
