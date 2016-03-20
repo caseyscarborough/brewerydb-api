@@ -12,3 +12,4 @@
 *.jar
 
 src/test/resources/test.properties
+src/test/resources/json/*.json
