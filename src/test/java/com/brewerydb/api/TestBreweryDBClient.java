@@ -11,26 +11,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 class TestBreweryDBClient extends BreweryDBClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestBreweryDBClient.class);
+    private static final long CACHE_TIME = 1000 * 60 * 60 * 24; // 1 day
     private final Gson gson = new Gson();
 
     public TestBreweryDBClient(String apiKey) {
@@ -40,13 +36,13 @@ class TestBreweryDBClient extends BreweryDBClient {
     @Override
     protected <T extends Result> Future<T> performRequestAsync(final AsyncHttpClient client, final Request request, final Class<T> clazz) {
         final String md5 = getMD5ForRequest(request);
-        final InputStream is = this.getClass().getClassLoader().getResourceAsStream("json/" + md5 + ".json");
-        if (is != null) {
+        final File file = new File("src/test/resources/json/" + md5 + ".json");
+        if (file.exists() && (file.lastModified() > new Date().getTime() - CACHE_TIME)) {
             LOGGER.info("Found cached JSON file " + md5 + ".json, returning contents...");
             ExecutorService executorService = Executors.newSingleThreadExecutor();
             Callable<T> task = new Callable<T>() {
                 public T call() throws Exception {
-                    return getResultFromJson(new Scanner(is).useDelimiter("\\A").next(), clazz);
+                    return getResultFromJson(new Scanner(new FileInputStream(file)).useDelimiter("\\A").next(), clazz);
                 }
             };
             return executorService.submit(task);
@@ -55,9 +51,9 @@ class TestBreweryDBClient extends BreweryDBClient {
         return client.executeRequest(request, new AsyncCompletionHandler<T>() {
             @Override
             public T onCompleted(Response response) throws Exception {
+                LOGGER.info("Writing new JSON cache file " + md5 + ".json...");
                 String json = response.getResponseBody();
-                File jsonFile = new File("src/test/resources/json/" + md5 + ".json");
-                PrintWriter writer = new PrintWriter(jsonFile, "UTF-8");
+                PrintWriter writer = new PrintWriter(file, "UTF-8");
                 writer.write(json);
                 writer.close();
                 return getResultFromJson(json, clazz);

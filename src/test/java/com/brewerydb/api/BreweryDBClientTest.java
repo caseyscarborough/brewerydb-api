@@ -14,9 +14,9 @@ import com.brewerydb.api.request.brewery.GetBreweriesRequest;
 import com.brewerydb.api.request.feature.GetFeaturesRequest;
 import com.brewerydb.api.result.GetRandomBeerResult;
 import com.brewerydb.api.result.beer.AddBeerResult;
+import com.brewerydb.api.result.beer.DeleteBeerResult;
 import com.brewerydb.api.result.beer.GetBeerResult;
 import com.brewerydb.api.result.beer.GetBeersResult;
-import com.brewerydb.api.result.beer.DeleteBeerResult;
 import com.brewerydb.api.result.beer.UpdateBeerResult;
 import com.brewerydb.api.result.brewery.GetBreweriesResult;
 import com.brewerydb.api.result.brewery.GetBreweryResult;
@@ -28,7 +28,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -69,11 +68,11 @@ public class BreweryDBClientTest {
     @Test
     public void testGetBeersWithMoreQueryParameters() throws Exception {
         GetBeersRequest query = GetBeersRequest.builder()
-                .withName("Buzz Light")
-                .withAbv("5.5")
-                .withOrganic(true)
-                .withStatus(Status.VERIFIED)
-                .build();
+            .withName("Buzz Light")
+            .withAbv("5.5")
+            .withOrganic(true)
+            .withStatus(Status.VERIFIED)
+            .build();
 
         GetBeersResult result = client.getBeers(query);
         assertTrue(result.wasSuccessful());
@@ -174,12 +173,12 @@ public class BreweryDBClientTest {
     @Test
     public void testAddBeer() throws Exception {
         AddBeerRequest request = AddBeerRequest.builder()
-                .withName("Test Beer")
-                .withAbv("12.1")
-                .withDescription("A test beer that should be deleted")
-                .withYear("2016")
-                .withStyleId(127)
-                .build();
+            .withName("Test Beer")
+            .withAbv("12.1")
+            .withDescription("A test beer that should be deleted")
+            .withYear("2016")
+            .withStyleId(127)
+            .build();
 
         AddBeerResult result = client.addBeer(request);
         assertTrue(result.wasSuccessful());
@@ -189,9 +188,9 @@ public class BreweryDBClientTest {
     @Test
     public void testUpdateBeer() throws Exception {
         UpdateBeerRequest request = UpdateBeerRequest.builder()
-                .withName("Newcastle Coffee Porter")
-                .withStyleId(123)
-                .build();
+            .withName("Newcastle Coffee Porter")
+            .withStyleId(123)
+            .build();
 
         UpdateBeerResult result = client.updateBeer("jUYZMk", request);
         assertTrue(result.wasSuccessful());
