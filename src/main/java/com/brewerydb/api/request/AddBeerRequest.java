@@ -1,13 +1,13 @@
-package com.brewerydb.api.query;
+package com.brewerydb.api.request;
 
 import com.brewerydb.api.exception.MissingRequestParameterException;
 
 import java.util.List;
 import java.util.Map;
 
-public class UpdateBeerRequest extends AbstractRequest {
+public class AddBeerRequest extends AbstractRequest {
 
-    private UpdateBeerRequest(Map<String, String> params) {
+    AddBeerRequest(Map<String, String> params) {
         super(params);
     }
 
@@ -15,7 +15,7 @@ public class UpdateBeerRequest extends AbstractRequest {
         return new Builder();
     }
 
-    public static class Builder extends AbstractRequestBuilder<UpdateBeerRequest> {
+    public static class Builder extends AbstractRequestBuilder<AddBeerRequest> {
 
         Builder() {}
 
@@ -100,7 +100,7 @@ public class UpdateBeerRequest extends AbstractRequest {
             return this;
         }
 
-        public UpdateBeerRequest build() {
+        public AddBeerRequest build() {
             if (params.get("name") == null) {
                 throw new MissingRequestParameterException("name");
             }
@@ -109,7 +109,7 @@ public class UpdateBeerRequest extends AbstractRequest {
                 throw new MissingRequestParameterException("styleId");
             }
 
-            return new UpdateBeerRequest(params);
+            return new AddBeerRequest(params);
         }
     }
 }

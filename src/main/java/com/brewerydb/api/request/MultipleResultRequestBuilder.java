@@ -1,7 +1,7 @@
-package com.brewerydb.api.query;
+package com.brewerydb.api.request;
 
-import com.brewerydb.api.query.order.Order;
-import com.brewerydb.api.query.sort.SortDirection;
+import com.brewerydb.api.request.order.Order;
+import com.brewerydb.api.request.sort.SortDirection;
 
 import java.util.List;
 

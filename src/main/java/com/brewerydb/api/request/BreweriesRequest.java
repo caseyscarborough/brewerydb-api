@@ -1,7 +1,7 @@
-package com.brewerydb.api.query;
+package com.brewerydb.api.request;
 
 import com.brewerydb.api.model.Status;
-import com.brewerydb.api.query.order.BreweryOrder;
+import com.brewerydb.api.request.order.BreweryOrder;
 
 import java.util.Map;
 

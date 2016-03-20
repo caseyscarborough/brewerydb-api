@@ -1,4 +1,4 @@
-package com.brewerydb.api.query;
+package com.brewerydb.api.request;
 
 abstract class PagedRequestBuilder<T, B extends PagedRequestBuilder<T, B>> extends AbstractRequestBuilder<T> {
 

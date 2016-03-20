@@ -1,4 +1,4 @@
-package com.brewerydb.api.query.order;
+package com.brewerydb.api.request.order;
 
 public interface Order {
 

@@ -1,4 +1,4 @@
-package com.brewerydb.api.query;
+package com.brewerydb.api.request;
 
 import java.util.Map;
 

@@ -2,9 +2,23 @@ package com.brewerydb.api;
 
 import com.brewerydb.api.config.Configuration;
 import com.brewerydb.api.exception.MissingApiKeyException;
-import com.brewerydb.api.query.*;
-import com.brewerydb.api.request.DeleteBeerResult;
-import com.brewerydb.api.result.*;
+import com.brewerydb.api.request.AddBeerRequest;
+import com.brewerydb.api.request.ApiRequest;
+import com.brewerydb.api.request.BeerRequest;
+import com.brewerydb.api.request.BeersRequest;
+import com.brewerydb.api.request.BreweriesRequest;
+import com.brewerydb.api.request.BreweryRequest;
+import com.brewerydb.api.request.FeaturesRequest;
+import com.brewerydb.api.request.UpdateBeerRequest;
+import com.brewerydb.api.result.AddBeerResult;
+import com.brewerydb.api.result.BeerResult;
+import com.brewerydb.api.result.BeersResult;
+import com.brewerydb.api.result.BreweriesResult;
+import com.brewerydb.api.result.BreweryResult;
+import com.brewerydb.api.result.DeleteBeerResult;
+import com.brewerydb.api.result.FeaturedResult;
+import com.brewerydb.api.result.FeaturesResult;
+import com.brewerydb.api.result.UpdateBeerResult;
 import com.google.gson.Gson;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
@@ -125,7 +139,7 @@ public class BreweryDBClient {
         if (request != null) {
             for (String key : request.getParams().keySet()) {
                 String value = request.getParams().get(key);
-                LOGGER.debug("Adding query parameter: " + key + "=" + value);
+                LOGGER.debug("Adding request parameter: " + key + "=" + value);
                 builder.addQueryParam(key, value);
             }
         }

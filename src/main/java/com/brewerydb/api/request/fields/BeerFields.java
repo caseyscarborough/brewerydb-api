@@ -1,4 +1,4 @@
-package com.brewerydb.api.query.fields;
+package com.brewerydb.api.request.fields;
 
 public class BeerFields {
 

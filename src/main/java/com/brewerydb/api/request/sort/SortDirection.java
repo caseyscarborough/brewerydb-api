@@ -1,4 +1,4 @@
-package com.brewerydb.api.query.sort;
+package com.brewerydb.api.request.sort;
 
 public enum SortDirection {
 
