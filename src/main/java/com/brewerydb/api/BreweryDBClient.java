@@ -53,7 +53,7 @@ public class BreweryDBClient {
     }
 
     public Future<GetBeersResult> getBeersAsync(GetBeersRequest request) {
-        return requestAsync(Configuration.BEERS_ENDPOINT, request, GetBeersResult.class, RequestType.GET);
+        return requestAsync(RequestMethod.GET, Configuration.BEERS_ENDPOINT, request, GetBeersResult.class);
     }
 
     public GetBeerResult getBeer(String id) {
@@ -72,7 +72,7 @@ public class BreweryDBClient {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to retrieve a beer.");
         }
-        return requestAsync(Configuration.BEER_ENDPOINT + "/" + id, request, GetBeerResult.class, RequestType.GET);
+        return requestAsync(RequestMethod.GET, Configuration.BEER_ENDPOINT + "/" + id, request, GetBeerResult.class);
     }
 
     public AddBeerResult addBeer(AddBeerRequest request) {
@@ -83,7 +83,7 @@ public class BreweryDBClient {
         if (request == null) {
             throw new IllegalArgumentException("Request parameter is required to add a beer.");
         }
-        return requestAsync(Configuration.BEERS_ENDPOINT, request, AddBeerResult.class, RequestType.POST);
+        return requestAsync(RequestMethod.POST, Configuration.BEERS_ENDPOINT, request, AddBeerResult.class);
     }
 
     public UpdateBeerResult updateBeer(String id, UpdateBeerRequest request) {
@@ -94,7 +94,7 @@ public class BreweryDBClient {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to update a beer.");
         }
-        return requestAsync(Configuration.BEER_ENDPOINT + "/" + id, request, UpdateBeerResult.class, RequestType.PUT);
+        return requestAsync(RequestMethod.PUT, Configuration.BEER_ENDPOINT + "/" + id, request, UpdateBeerResult.class);
     }
 
     public DeleteBeerResult deleteBeer(String id) {
@@ -105,7 +105,7 @@ public class BreweryDBClient {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to delete a beer.");
         }
-        return requestAsync(Configuration.BEER_ENDPOINT + "/" + id, null, DeleteBeerResult.class, RequestType.DELETE);
+        return requestAsync(RequestMethod.DELETE, Configuration.BEER_ENDPOINT + "/" + id, null, DeleteBeerResult.class);
     }
 
     public GetRandomBeerResult getRandomBeer() {
@@ -113,7 +113,7 @@ public class BreweryDBClient {
     }
 
     public Future<GetRandomBeerResult> getRandomBeerAsync() {
-        return requestAsync(Configuration.RANDOM_BEER_ENDPOINT, null, GetRandomBeerResult.class, RequestType.GET);
+        return requestAsync(RequestMethod.GET, Configuration.RANDOM_BEER_ENDPOINT, null, GetRandomBeerResult.class);
     }
 
     public GetBreweriesResult getBreweries(GetBreweriesRequest request) {
@@ -121,7 +121,7 @@ public class BreweryDBClient {
     }
 
     public Future<GetBreweriesResult> getBreweriesAsync(GetBreweriesRequest query) {
-        return requestAsync(Configuration.BREWERIES_ENDPOINT, query, GetBreweriesResult.class, RequestType.GET);
+        return requestAsync(RequestMethod.GET, Configuration.BREWERIES_ENDPOINT, query, GetBreweriesResult.class);
     }
 
     public GetBreweryResult getBrewery(String id) {
@@ -140,7 +140,7 @@ public class BreweryDBClient {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to retrieve a brewery.");
         }
-        return requestAsync(Configuration.BREWERY_ENDPOINT + "/" + id, query, GetBreweryResult.class, RequestType.GET);
+        return requestAsync(RequestMethod.GET, Configuration.BREWERY_ENDPOINT + "/" + id, query, GetBreweryResult.class);
     }
 
     public FeaturedResult getFeatured() {
@@ -148,7 +148,7 @@ public class BreweryDBClient {
     }
 
     public Future<FeaturedResult> getFeaturedAsync() {
-        return requestAsync(Configuration.FEATURED_ENDPOINT, null, FeaturedResult.class, RequestType.GET);
+        return requestAsync(RequestMethod.GET, Configuration.FEATURED_ENDPOINT, null, FeaturedResult.class);
     }
 
     public FeaturesResult getFeatures() {
@@ -164,10 +164,10 @@ public class BreweryDBClient {
     }
 
     public Future<FeaturesResult> getFeaturesAsync(GetFeaturesRequest query) {
-        return requestAsync(Configuration.FEATURES_ENDPOINT, query, FeaturesResult.class, RequestType.GET);
+        return requestAsync(RequestMethod.GET, Configuration.FEATURES_ENDPOINT, query, FeaturesResult.class);
     }
 
-    private enum RequestType {
+    private enum RequestMethod {
         GET, POST, PUT, DELETE;
     }
 
@@ -181,11 +181,11 @@ public class BreweryDBClient {
         }
     }
 
-    private <T extends Result> Future<T> requestAsync(final String endpoint, final ApiRequest request, final Class<T> clazz, final RequestType requestType) {
+    private <T extends Result> Future<T> requestAsync(final RequestMethod method, final String endpoint, final ApiRequest request, final Class<T> clazz) {
         AsyncHttpClient client = new AsyncHttpClient();
         AsyncHttpClient.BoundRequestBuilder builder;
 
-        switch (requestType) {
+        switch (method) {
             case GET:
                 builder = client.prepareGet(endpoint);
                 break;
@@ -199,12 +199,12 @@ public class BreweryDBClient {
                 builder = client.prepareDelete(endpoint);
                 break;
             default:
-                throw new IllegalStateException(requestType.name() + " has not been implemented");
+                throw new IllegalStateException(method.name() + " has not been implemented");
         }
 
         addCommonParameters(builder);
 
-        if (requestType == RequestType.GET) {
+        if (method == RequestMethod.GET) {
             if (request != null) {
                 for (String key : request.getParams().keySet()) {
                     String value = request.getParams().get(key);
@@ -212,7 +212,7 @@ public class BreweryDBClient {
                     builder.addQueryParam(key, value);
                 }
             }
-        } else if (requestType == RequestType.POST || requestType == RequestType.PUT) {
+        } else if (method == RequestMethod.POST || method == RequestMethod.PUT) {
             if (request != null) {
                 for (String key : request.getParams().keySet()) {
                     String value = request.getParams().get(key);
@@ -222,7 +222,7 @@ public class BreweryDBClient {
             }
         }
 
-        LOGGER.debug("Performing {} request to endpoint {}", requestType.name(), endpoint);
+        LOGGER.debug("Performing {} request to endpoint {}", method.name(), endpoint);
         return performRequestAsync(client, builder.build(), clazz);
     }
 
