@@ -9,6 +9,7 @@ public abstract class AbstractResult<T> implements Result<T> {
     private int totalResults;
     private T data;
     private String status;
+    private String message;
     private String errorMessage;
 
     public Integer getCurrentPage() {
@@ -49,6 +50,14 @@ public abstract class AbstractResult<T> implements Result<T> {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getErrorMessage() {

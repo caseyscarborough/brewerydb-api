@@ -14,5 +14,7 @@ public interface Result<T> {
 
     String getStatus();
 
+    String getMessage();
+
     String getErrorMessage();
 }

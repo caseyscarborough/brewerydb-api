@@ -1,14 +1,18 @@
 package com.brewerydb.api.query;
 
-public class FeaturesQuery extends AbstractQuery {
+import java.util.Map;
 
-    private FeaturesQuery() {}
+public class FeaturesRequest extends AbstractRequest {
+
+    private FeaturesRequest(Map<String, String> params) {
+        super(params);
+    }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public static class Builder extends PagedQueryBuilder<FeaturesQuery, Builder> {
+    public static class Builder extends PagedRequestBuilder<FeaturesRequest, Builder> {
 
         private Builder() {}
 
@@ -27,10 +31,8 @@ public class FeaturesQuery extends AbstractQuery {
             return this;
         }
 
-        public FeaturesQuery build() {
-            FeaturesQuery query = new FeaturesQuery();
-            query.params = params;
-            return query;
+        public FeaturesRequest build() {
+            return new FeaturesRequest(params);
         }
     }
 }

@@ -17,6 +17,7 @@ public class Beer {
     private Available available;
     private BeerLabels labels;
     private Style style;
+    private Glass glass;
 
     public String getId() {
         return id;
@@ -128,5 +129,13 @@ public class Beer {
 
     public void setStyle(Style style) {
         this.style = style;
+    }
+
+    public Glass getGlass() {
+        return glass;
+    }
+
+    public void setGlass(Glass glass) {
+        this.glass = glass;
     }
 }

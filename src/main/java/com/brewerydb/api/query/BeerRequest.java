@@ -3,16 +3,17 @@ package com.brewerydb.api.query;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BeerQuery extends AbstractQuery {
+public class BeerRequest extends AbstractRequest {
 
-    private BeerQuery() {
+    private BeerRequest(Map<String, String> params) {
+        super(params);
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public static class Builder extends AbstractQueryBuilder<BeerQuery> {
+    public static class Builder extends AbstractRequestBuilder<BeerRequest> {
 
         private Map<String, String> params = new HashMap<String, String>();
 
@@ -34,10 +35,8 @@ public class BeerQuery extends AbstractQuery {
             return this;
         }
 
-        public BeerQuery build() {
-            BeerQuery beerQuery = new BeerQuery();
-            beerQuery.params = params;
-            return beerQuery;
+        public BeerRequest build() {
+            return new BeerRequest(params);
         }
     }
 }

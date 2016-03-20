@@ -3,15 +3,19 @@ package com.brewerydb.api.query;
 import com.brewerydb.api.model.Status;
 import com.brewerydb.api.query.order.BreweryOrder;
 
-public class BreweriesQuery extends AbstractQuery {
+import java.util.Map;
 
-    private BreweriesQuery() {}
+public class BreweriesRequest extends AbstractRequest {
+
+    private BreweriesRequest(Map<String, String> params) {
+        super(params);
+    }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public static class Builder extends MultipleResultQueryBuilder<BreweriesQuery, BreweryOrder, Builder> {
+    public static class Builder extends MultipleResultRequestBuilder<BreweriesRequest, BreweryOrder, Builder> {
 
         private Builder() {
         }
@@ -47,10 +51,8 @@ public class BreweriesQuery extends AbstractQuery {
             return this;
         }
 
-        public BreweriesQuery build() {
-            BreweriesQuery query = new BreweriesQuery();
-            query.params = params;
-            return query;
+        public BreweriesRequest build() {
+            return new BreweriesRequest(params);
         }
     }
 }

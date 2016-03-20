@@ -2,7 +2,7 @@ package com.brewerydb.api.model;
 
 public class Style {
 
-    private Long ind;
+    private Long id;
     private String name;
     private String shortName;
     private String description;
@@ -25,12 +25,12 @@ public class Style {
         this.category = category;
     }
 
-    public Long getInd() {
-        return ind;
+    public Long getId() {
+        return id;
     }
 
-    public void setInd(Long ind) {
-        this.ind = ind;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

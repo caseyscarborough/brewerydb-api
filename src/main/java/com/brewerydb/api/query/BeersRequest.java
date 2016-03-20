@@ -4,16 +4,19 @@ import com.brewerydb.api.model.Status;
 import com.brewerydb.api.query.fields.BeerFields;
 import com.brewerydb.api.query.order.BeerOrder;
 
-public class BeersQuery extends AbstractQuery {
+import java.util.Map;
 
-    private BeersQuery() {
+public class BeersRequest extends AbstractRequest {
+
+    private BeersRequest(Map<String, String> params) {
+        super(params);
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public static class Builder extends MultipleResultQueryBuilder<BeersQuery, BeerOrder, Builder> {
+    public static class Builder extends MultipleResultRequestBuilder<BeersRequest, BeerOrder, Builder> {
 
         private Builder() {
         }
@@ -93,10 +96,8 @@ public class BeersQuery extends AbstractQuery {
             return this;
         }
 
-        public BeersQuery build() {
-            BeersQuery beersQuery = new BeersQuery();
-            beersQuery.params = params;
-            return beersQuery;
+        public BeersRequest build() {
+            return new BeersRequest(params);
         }
     }
 }

@@ -1,14 +1,18 @@
 package com.brewerydb.api.query;
 
-public class BreweryQuery extends AbstractQuery {
+import java.util.Map;
 
-    private BreweryQuery() {}
+public class BreweryRequest extends AbstractRequest {
+
+    private BreweryRequest(Map<String, String> params) {
+        super(params);
+    }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public static class Builder extends AbstractQueryBuilder<BreweryQuery> {
+    public static class Builder extends AbstractRequestBuilder<BreweryRequest> {
 
         private Builder() {}
 
@@ -32,10 +36,8 @@ public class BreweryQuery extends AbstractQuery {
             return this;
         }
 
-        public BreweryQuery build() {
-            BreweryQuery query = new BreweryQuery();
-            query.params = params;
-            return query;
+        public BreweryRequest build() {
+            return new BreweryRequest(params);
         }
     }
 }
