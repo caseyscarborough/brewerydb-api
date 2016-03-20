@@ -49,81 +49,131 @@ public class BreweryDBClient {
     }
 
     public GetBeersResult getBeers(GetBeersRequest request) {
-        return request(Configuration.BEERS_ENDPOINT, request, GetBeersResult.class, RequestType.GET);
+        return waitFor(getBeersAsync(request));
+    }
+
+    public Future<GetBeersResult> getBeersAsync(GetBeersRequest request) {
+        return requestAsync(Configuration.BEERS_ENDPOINT, request, GetBeersResult.class, RequestType.GET);
     }
 
     public GetBeerResult getBeer(String id) {
-        return getBeer(id, null);
+        return waitFor(getBeerAsync(id));
+    }
+
+    public Future<GetBeerResult> getBeerAsync(String id) {
+        return getBeerAsync(id, null);
     }
 
     public GetBeerResult getBeer(String id, GetBeerRequest request) {
+        return waitFor(getBeerAsync(id, request));
+    }
+
+    public Future<GetBeerResult> getBeerAsync(String id, GetBeerRequest request) {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to retrieve a beer.");
         }
-        return request(Configuration.BEER_ENDPOINT + "/" + id, request, GetBeerResult.class, RequestType.GET);
+        return requestAsync(Configuration.BEER_ENDPOINT + "/" + id, request, GetBeerResult.class, RequestType.GET);
     }
 
     public AddBeerResult addBeer(AddBeerRequest request) {
+        return waitFor(addBeerAsync(request));
+    }
+
+    public Future<AddBeerResult> addBeerAsync(AddBeerRequest request) {
         if (request == null) {
             throw new IllegalArgumentException("Request parameter is required to add a beer.");
         }
-        return request(Configuration.BEERS_ENDPOINT, request, AddBeerResult.class, RequestType.POST);
+        return requestAsync(Configuration.BEERS_ENDPOINT, request, AddBeerResult.class, RequestType.POST);
     }
 
     public UpdateBeerResult updateBeer(String id, UpdateBeerRequest request) {
+        return waitFor(updateBeerAsync(id, request));
+    }
+
+    public Future<UpdateBeerResult> updateBeerAsync(String id, UpdateBeerRequest request) {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to update a beer.");
         }
-        return request(Configuration.BEER_ENDPOINT + "/" + id, request, UpdateBeerResult.class, RequestType.PUT);
+        return requestAsync(Configuration.BEER_ENDPOINT + "/" + id, request, UpdateBeerResult.class, RequestType.PUT);
     }
 
     public DeleteBeerResult deleteBeer(String id) {
+        return waitFor(deleteBeerAsync(id));
+    }
+
+    public Future<DeleteBeerResult> deleteBeerAsync(String id) {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to delete a beer.");
         }
-        return request(Configuration.BEER_ENDPOINT + "/" + id, null, DeleteBeerResult.class, RequestType.DELETE);
+        return requestAsync(Configuration.BEER_ENDPOINT + "/" + id, null, DeleteBeerResult.class, RequestType.DELETE);
     }
 
     public GetRandomBeerResult getRandomBeer() {
-        return request(Configuration.RANDOM_BEER_ENDPOINT, null, GetRandomBeerResult.class, RequestType.GET);
+        return waitFor(getRandomBeerAsync());
     }
 
-    public GetBreweriesResult getBreweries(GetBreweriesRequest query) {
-        return request(Configuration.BREWERIES_ENDPOINT, query, GetBreweriesResult.class, RequestType.GET);
+    public Future<GetRandomBeerResult> getRandomBeerAsync() {
+        return requestAsync(Configuration.RANDOM_BEER_ENDPOINT, null, GetRandomBeerResult.class, RequestType.GET);
+    }
+
+    public GetBreweriesResult getBreweries(GetBreweriesRequest request) {
+        return waitFor(getBreweriesAsync(request));
+    }
+
+    public Future<GetBreweriesResult> getBreweriesAsync(GetBreweriesRequest query) {
+        return requestAsync(Configuration.BREWERIES_ENDPOINT, query, GetBreweriesResult.class, RequestType.GET);
     }
 
     public GetBreweryResult getBrewery(String id) {
-        return getBrewery(id, null);
+        return waitFor(getBreweryAsync(id));
     }
 
-    public GetBreweryResult getBrewery(String id, GetBreweryRequest query) {
+    public Future<GetBreweryResult> getBreweryAsync(String id) {
+        return getBreweryAsync(id, null);
+    }
+
+    public GetBreweryResult getBrewery(String id, GetBreweryRequest request) {
+        return waitFor(getBreweryAsync(id, request));
+    }
+
+    public Future<GetBreweryResult> getBreweryAsync(String id, GetBreweryRequest query) {
         if (id == null) {
             throw new IllegalArgumentException("ID parameter is required to retrieve a brewery.");
         }
-        return request(Configuration.BREWERY_ENDPOINT + "/" + id, query, GetBreweryResult.class, RequestType.GET);
+        return requestAsync(Configuration.BREWERY_ENDPOINT + "/" + id, query, GetBreweryResult.class, RequestType.GET);
     }
 
     public FeaturedResult getFeatured() {
-        return request(Configuration.FEATURED_ENDPOINT, null, FeaturedResult.class, RequestType.GET);
+        return waitFor(getFeaturedAsync());
+    }
+
+    public Future<FeaturedResult> getFeaturedAsync() {
+        return requestAsync(Configuration.FEATURED_ENDPOINT, null, FeaturedResult.class, RequestType.GET);
     }
 
     public FeaturesResult getFeatures() {
-        return getFeatures(null);
+        return waitFor(getFeaturesAsync());
+    }
+
+    public Future<FeaturesResult> getFeaturesAsync() {
+        return getFeaturesAsync(null);
     }
 
     public FeaturesResult getFeatures(GetFeaturesRequest query) {
-        return request(Configuration.FEATURES_ENDPOINT, query, FeaturesResult.class, RequestType.GET);
+        return waitFor(getFeaturesAsync(query));
+    }
+
+    public Future<FeaturesResult> getFeaturesAsync(GetFeaturesRequest query) {
+        return requestAsync(Configuration.FEATURES_ENDPOINT, query, FeaturesResult.class, RequestType.GET);
     }
 
     private enum RequestType {
         GET, POST, PUT, DELETE;
     }
 
-    private <T extends Result> T request(final String endpoint, final ApiRequest request, final Class<T> clazz, final RequestType requestType) {
-        Future<T> f = requestAsync(endpoint, request, clazz, requestType);
-
+    private <T> T waitFor(Future<T> future) {
         try {
-            return f.get();
+            return future.get();
         } catch (InterruptedException e) {
             throw new BreweryDBException(e.getMessage());
         } catch (ExecutionException e) {
@@ -180,6 +230,8 @@ public class BreweryDBClient {
         return client.executeRequest(request, new AsyncCompletionHandler<T>() {
             @Override
             public T onCompleted(Response response) throws Exception {
+                LOGGER.debug("Rate limit remaining: {}" + response.getHeader(RATELIMIT_REMAINING_HEADER));
+
                 T result = gson.fromJson(response.getContentType(), clazz);
                 validateResult(result);
                 return result;
