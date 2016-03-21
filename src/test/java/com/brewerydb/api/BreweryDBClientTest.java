@@ -5,23 +5,26 @@ import com.brewerydb.api.exception.MissingApiKeyException;
 import com.brewerydb.api.exception.MissingRequestParameterException;
 import com.brewerydb.api.model.Beer;
 import com.brewerydb.api.model.Brewery;
+import com.brewerydb.api.model.Category;
 import com.brewerydb.api.model.Feature;
+import com.brewerydb.api.model.Glass;
+import com.brewerydb.api.model.Hop;
 import com.brewerydb.api.model.Status;
-import com.brewerydb.api.request.ApiRequest;
+import com.brewerydb.api.model.Style;
 import com.brewerydb.api.request.beer.AddBeerRequest;
 import com.brewerydb.api.request.beer.BeerRequest;
-import com.brewerydb.api.request.beer.GetBeerRequest;
 import com.brewerydb.api.request.beer.GetBeersRequest;
 import com.brewerydb.api.request.beer.GetRandomBeerRequest;
 import com.brewerydb.api.request.beer.UpdateBeerRequest;
-import com.brewerydb.api.request.beer.order.BeerOrder;
 import com.brewerydb.api.request.brewery.BreweryRequest;
 import com.brewerydb.api.request.brewery.GetBreweriesRequest;
 import com.brewerydb.api.request.brewery.GetBreweryRequest;
-import com.brewerydb.api.request.brewery.order.BreweryOrder;
 import com.brewerydb.api.request.feature.FeatureRequest;
 import com.brewerydb.api.request.feature.GetFeaturesRequest;
-import com.brewerydb.api.request.sort.SortDirection;
+import com.brewerydb.api.request.hop.GetHopsRequest;
+import com.brewerydb.api.request.hop.HopsRequest;
+import com.brewerydb.api.result.hop.GetHopResult;
+import com.brewerydb.api.result.hop.GetHopsResult;
 import com.brewerydb.api.result.GetRandomBeerResult;
 import com.brewerydb.api.result.beer.AddBeerResult;
 import com.brewerydb.api.result.beer.DeleteBeerResult;
@@ -30,8 +33,14 @@ import com.brewerydb.api.result.beer.GetBeersResult;
 import com.brewerydb.api.result.beer.UpdateBeerResult;
 import com.brewerydb.api.result.brewery.GetBreweriesResult;
 import com.brewerydb.api.result.brewery.GetBreweryResult;
+import com.brewerydb.api.result.category.GetCategoriesResult;
+import com.brewerydb.api.result.category.GetCategoryResult;
 import com.brewerydb.api.result.feature.FeaturedResult;
 import com.brewerydb.api.result.feature.FeaturesResult;
+import com.brewerydb.api.result.glass.GetGlassResult;
+import com.brewerydb.api.result.glass.GetGlassesResult;
+import com.brewerydb.api.result.style.GetStyleResult;
+import com.brewerydb.api.result.style.GetStylesResult;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -148,12 +157,30 @@ public class BreweryDBClientTest {
     }
 
     @Test
+    public void testGetBreweryWithNullId() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        client.getBrewery(null);
+    }
+
+    @Test
     public void testGetBrewerySimple() throws Exception {
         GetBreweryResult result = client.getBrewery("TMc6H2");
-
         assertTrue(result.wasSuccessful());
         assertTrue(result.getMessage().contains("Request Successful"));
 
+        Brewery brewery = result.getData();
+        assertEquals("SweetWater Brewing Company", brewery.getName());
+        assertEquals(1325576529000L, brewery.getCreateDate().getTime());
+        assertEquals(Status.VERIFIED, brewery.getStatus());
+    }
+
+    @Test
+    public void testGetBreweryWithCriteria() throws Exception {
+        GetBreweryRequest request = BreweryRequest.getBrewery()
+            .withLocations()
+            .build();
+
+        GetBreweryResult result = client.getBrewery("TMc6H2", request);
         Brewery brewery = result.getData();
         assertEquals("SweetWater Brewing Company", brewery.getName());
         assertEquals(1325576529000L, brewery.getCreateDate().getTime());
@@ -193,6 +220,9 @@ public class BreweryDBClientTest {
 
         Feature feature = features.get(1);
         assertEquals("Seven Barrel Brewery", feature.getBrewery().getName());
+
+        Double longitude = -72.3200515;
+        assertEquals(longitude, feature.getBrewery().getLocations().get(0).getLongitude());
         assertEquals("2015", feature.getYear());
         assertEquals(5, (int) feature.getWeek());
         assertEquals("FrostNipper", feature.getBeer().getName());
@@ -244,6 +274,12 @@ public class BreweryDBClientTest {
     }
 
     @Test
+    public void testUpdateBeerWithNullId() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        client.updateBeer(null, null);
+    }
+
+    @Test
     public void testDeleteBeer() throws Exception {
         DeleteBeerResult result = client.deleteBeer("jUYZMk");
         assertTrue(result.wasSuccessful());
@@ -251,9 +287,14 @@ public class BreweryDBClientTest {
     }
 
     @Test
+    public void testDeleteBeerWithNullId() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        client.deleteBeer(null);
+    }
+
+    @Test
     public void testGetRandomBeer() throws Exception {
         GetRandomBeerResult result = client.getRandomBeer();
-
         assertTrue(result.wasSuccessful());
 
         Beer beer = result.getData();
@@ -276,5 +317,106 @@ public class BreweryDBClientTest {
         assertTrue(beer.getAbv() > 8 && beer.getAbv() < 10);
         assertEquals(121, (long) beer.getStyle().getId());
         assertEquals(5L, (long) beer.getGlass().getId());
+    }
+
+    @Test
+    public void testGetCategoriesWithNoCriteria() throws Exception {
+        GetCategoriesResult result = client.getCategories();
+        List<Category> categories = result.getData();
+        assertTrue(result.wasSuccessful());
+        assertTrue(categories.size() > 0);
+    }
+
+    @Test
+    public void testGetCategory() throws Exception {
+        GetCategoryResult result = client.getCategory(5);
+
+        Category category = result.getData();
+        assertEquals(5, (int) category.getId());
+        assertEquals("Belgian And French Origin Ales", category.getName());
+    }
+
+    @Test
+    public void testGetCategoryWithNullId() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        client.getCategory(null);
+    }
+
+    @Test
+    public void testGetStyles() throws Exception {
+        GetStylesResult result = client.getStyles();
+        List<Style> styles = result.getData();
+        assertTrue(styles.size() > 0);
+    }
+
+    @Test
+    public void testGetStyle() throws Exception {
+        GetStyleResult result = client.getStyle(1);
+        Style style = result.getData();
+        assertEquals(1, (int)style.getId());
+        assertEquals("Classic English-Style Pale Ale", style.getName());
+    }
+
+    @Test
+    public void testGetStyleWithNullId() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        client.getStyle(null);
+    }
+
+    @Test
+    public void testGetGlasses() throws Exception {
+        GetGlassesResult result = client.getGlasses();
+        List<Glass> glasses = result.getData();
+        assertTrue(glasses.size() > 0);
+    }
+
+    @Test
+    public void testGetGlass() throws Exception {
+        GetGlassResult result = client.getGlass(5);
+        Glass glass = result.getData();
+        assertEquals(5, (int) glass.getId());
+        assertEquals("Pint", glass.getName());
+    }
+
+    @Test
+    public void testGetGlassWithNullId() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        client.getGlass(null);
+    }
+
+    @Test
+    public void testGetHops() throws Exception {
+        GetHopsResult result = client.getHops();
+        List<Hop> hops = result.getData();
+        assertTrue(hops.size() > 0);
+    }
+
+    @Test
+    public void testGetHopsWithPage() throws Exception {
+        GetHopsRequest request = HopsRequest.getHops().withPage(2).build();
+        GetHopsResult result = client.getHops(request);
+        List<Hop> hops = result.getData();
+        assertTrue(hops.size() > 0);
+    }
+
+    @Test
+    public void testGetHop() throws Exception {
+        GetHopResult result = client.getHop(84);
+        Hop hop = result.getData();
+        assertEquals(84, (int) hop.getId());
+        assertEquals("Mount Hood", hop.getName());
+    }
+
+    @Test
+    public void testGetHopWithNullId() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        client.getHop(null);
+    }
+
+    @Test
+    public void testGetHopWithNotFoundId() throws Exception {
+        expectedException.expect(BreweryDBException.class);
+        expectedException.expectMessage("The object you requested was not found");
+        client.getHop(12323);
     }
 }

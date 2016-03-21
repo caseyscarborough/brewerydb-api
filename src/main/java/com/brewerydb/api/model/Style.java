@@ -2,7 +2,7 @@ package com.brewerydb.api.model;
 
 public class Style {
 
-    private Long id;
+    private Integer id;
     private String name;
     private String shortName;
     private String description;
@@ -17,7 +17,7 @@ public class Style {
     private String fgMax;
     private Category category;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 

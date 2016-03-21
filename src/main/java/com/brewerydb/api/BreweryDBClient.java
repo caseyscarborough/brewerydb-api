@@ -13,6 +13,9 @@ import com.brewerydb.api.request.beer.UpdateBeerRequest;
 import com.brewerydb.api.request.brewery.GetBreweriesRequest;
 import com.brewerydb.api.request.brewery.GetBreweryRequest;
 import com.brewerydb.api.request.feature.GetFeaturesRequest;
+import com.brewerydb.api.request.hop.GetHopsRequest;
+import com.brewerydb.api.result.hop.GetHopResult;
+import com.brewerydb.api.result.hop.GetHopsResult;
 import com.brewerydb.api.result.GetRandomBeerResult;
 import com.brewerydb.api.result.Result;
 import com.brewerydb.api.result.beer.AddBeerResult;
@@ -22,8 +25,14 @@ import com.brewerydb.api.result.beer.GetBeersResult;
 import com.brewerydb.api.result.beer.UpdateBeerResult;
 import com.brewerydb.api.result.brewery.GetBreweriesResult;
 import com.brewerydb.api.result.brewery.GetBreweryResult;
+import com.brewerydb.api.result.category.GetCategoriesResult;
+import com.brewerydb.api.result.category.GetCategoryResult;
 import com.brewerydb.api.result.feature.FeaturedResult;
 import com.brewerydb.api.result.feature.FeaturesResult;
+import com.brewerydb.api.result.glass.GetGlassResult;
+import com.brewerydb.api.result.glass.GetGlassesResult;
+import com.brewerydb.api.result.style.GetStyleResult;
+import com.brewerydb.api.result.style.GetStylesResult;
 import com.google.gson.Gson;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
@@ -219,7 +228,7 @@ public class BreweryDBClient {
      * @return {@link GetRandomBeerResult} - The {@link Result} containing a random beer.
      */
     public GetRandomBeerResult getRandomBeer() {
-        return waitFor(getRandomBeerAsync(null));
+        return waitFor(getRandomBeerAsync());
     }
 
     /**
@@ -348,6 +357,157 @@ public class BreweryDBClient {
      */
     public Future<FeaturesResult> getFeaturesAsync(GetFeaturesRequest query) {
         return requestAsync(RequestMethod.GET, Configuration.FEATURES_ENDPOINT, query, FeaturesResult.class);
+    }
+
+    /**
+     * Returns a list of all {@link com.brewerydb.api.model.Category Categories}.
+     *
+     * @return {@link GetCategoriesResult} - The {@link Result} containing all categories.
+     */
+    public GetCategoriesResult getCategories() {
+        return waitFor(getCategoriesAsync());
+    }
+
+    /**
+     * The asynchronous version of {@link #getCategories()}.
+     */
+    public Future<GetCategoriesResult> getCategoriesAsync() {
+        return requestAsync(RequestMethod.GET, Configuration.CATEGORIES_ENDPOINT, null, GetCategoriesResult.class);
+    }
+
+    /**
+     * Returns a {@link com.brewerydb.api.model.Category} by ID.
+     *
+     * @param id The ID of the {@link com.brewerydb.api.model.Category} to retrieve.
+     * @return {@link GetCategoryResult} - The {@link Result} containing the requested category.
+     */
+    public GetCategoryResult getCategory(Integer id) {
+        return waitFor(getCategoryAsync(id));
+    }
+
+    /**
+     * The asynchronous version of {@link #getCategory(Integer)}.
+     */
+    public Future<GetCategoryResult> getCategoryAsync(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID parameter is required to retrieve a category.");
+        }
+        return requestAsync(RequestMethod.GET, Configuration.CATEGORY_ENDPOINT + "/" + id, null, GetCategoryResult.class);
+    }
+
+    /**
+     * Returns a list of {@link com.brewerydb.api.model.Style Styles}.
+     *
+     * @return {@link GetStylesResult} - The {@link Result} containing all styles.
+     */
+    public GetStylesResult getStyles() {
+        return waitFor(getStylesAsync());
+    }
+
+    /**
+     * The asynchronous version of {@link #getStyles()}.
+     */
+    public Future<GetStylesResult> getStylesAsync() {
+        return requestAsync(RequestMethod.GET, Configuration.STYLES_ENDPOINT, null, GetStylesResult.class);
+    }
+
+    /**
+     * Returns a {@link com.brewerydb.api.model.Style} by ID.
+     *
+     * @param id The ID of the {@link com.brewerydb.api.model.Style} to retrieve.
+     * @return {@link GetStyleResult} - The {@link Result} containing the requested style.
+     */
+    public GetStyleResult getStyle(Integer id) {
+        return waitFor(getStyleAsync(id));
+    }
+
+    /**
+     * The asynchronous version of {@link #getStyle(Integer)}.
+     */
+    public Future<GetStyleResult> getStyleAsync(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID parameter is required to retrieve a style.");
+        }
+        return requestAsync(RequestMethod.GET, Configuration.STYLE_ENDPOINT + "/" + id, null, GetStyleResult.class);
+    }
+
+    /**
+     * Returns a list of {@link com.brewerydb.api.model.Glass Glasses}.
+     */
+    public GetGlassesResult getGlasses() {
+        return waitFor(getGlassesAsync());
+    }
+
+    /**
+     * The asynchronous version of {@link #getGlasses()}.
+     */
+    public Future<GetGlassesResult> getGlassesAsync() {
+        return requestAsync(RequestMethod.GET, Configuration.GLASSES_ENDPOINT, null, GetGlassesResult.class);
+    }
+
+    /**
+     * Returns a glass by ID.
+     * @param id The ID of the glass to retrieve.
+     */
+    public GetGlassResult getGlass(Integer id) {
+        return waitFor(getGlassAsync(id));
+    }
+
+    /**
+     * The asynchronous version of {@link #getGlass(Integer)}.
+     */
+    public Future<GetGlassResult> getGlassAsync(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID parameter is required to retrieve a glass.");
+        }
+        return requestAsync(RequestMethod.GET, Configuration.GLASS_ENDPOINT + "/" + id, null, GetGlassResult.class);
+    }
+
+    /**
+     * Returns a list of {@link com.brewerydb.api.model.Hop Hops}.
+     */
+    public GetHopsResult getHops() {
+        return waitFor(getHopsAsync());
+    }
+
+    /**
+     * The asynchronous version of {@link #getHops()}.
+     */
+    public Future<GetHopsResult> getHopsAsync() {
+        return getHopsAsync(null);
+    }
+
+    /**
+     * Returns a list of {@link com.brewerydb.api.model.Hop Hops} by page.
+     * @param request The filter for this request.
+     */
+    public GetHopsResult getHops(GetHopsRequest request) {
+        return waitFor(getHopsAsync(request));
+    }
+
+    /**
+     * The asynchronous version of {@link #getHop(Integer)}.
+     */
+    public Future<GetHopsResult> getHopsAsync(GetHopsRequest request) {
+        return requestAsync(RequestMethod.GET, Configuration.HOPS_ENDPOINT, request, GetHopsResult.class);
+    }
+
+    /**
+     * Returns a {@link com.brewerydb.api.model.Hop} by ID.
+     * @param id The ID of the hop to return.
+     */
+    public GetHopResult getHop(Integer id) {
+        return waitFor(getHopAsync(id));
+    }
+
+    /**
+     * The asynchronous version of {@link #getHop(Integer)}.
+     */
+    public Future<GetHopResult> getHopAsync(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID parameter is required to retrieve a hop.");
+        }
+        return requestAsync(RequestMethod.GET, Configuration.HOP_ENDPOINT + "/" + id, null, GetHopResult.class);
     }
 
     private enum RequestMethod {

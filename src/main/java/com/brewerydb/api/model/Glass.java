@@ -4,11 +4,11 @@ import java.util.Date;
 
 public class Glass {
 
-    private Long id;
+    private Integer id;
     private String name;
     private Date createDate;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
