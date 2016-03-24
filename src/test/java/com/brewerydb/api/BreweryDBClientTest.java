@@ -22,7 +22,9 @@ import com.brewerydb.api.request.brewery.GetBreweryRequest;
 import com.brewerydb.api.request.feature.FeatureRequest;
 import com.brewerydb.api.request.feature.GetFeaturesRequest;
 import com.brewerydb.api.request.hop.GetHopsRequest;
-import com.brewerydb.api.request.hop.HopsRequest;
+import com.brewerydb.api.request.hop.HopRequest;
+import com.brewerydb.api.request.ingredient.GetIngredientsRequest;
+import com.brewerydb.api.request.ingredient.IngredientRequest;
 import com.brewerydb.api.result.hop.GetHopResult;
 import com.brewerydb.api.result.hop.GetHopsResult;
 import com.brewerydb.api.result.GetRandomBeerResult;
@@ -39,6 +41,8 @@ import com.brewerydb.api.result.feature.FeaturedResult;
 import com.brewerydb.api.result.feature.FeaturesResult;
 import com.brewerydb.api.result.glass.GetGlassResult;
 import com.brewerydb.api.result.glass.GetGlassesResult;
+import com.brewerydb.api.result.ingredient.GetIngredientResult;
+import com.brewerydb.api.result.ingredient.GetIngredientsResult;
 import com.brewerydb.api.result.style.GetStyleResult;
 import com.brewerydb.api.result.style.GetStylesResult;
 import org.junit.Before;
@@ -393,7 +397,7 @@ public class BreweryDBClientTest {
 
     @Test
     public void testGetHopsWithPage() throws Exception {
-        GetHopsRequest request = HopsRequest.getHops().withPage(2).build();
+        GetHopsRequest request = HopRequest.getHops().withPage(2).build();
         GetHopsResult result = client.getHops(request);
         List<Hop> hops = result.getData();
         assertTrue(hops.size() > 0);
@@ -418,5 +422,31 @@ public class BreweryDBClientTest {
         expectedException.expect(BreweryDBException.class);
         expectedException.expectMessage("The object you requested was not found");
         client.getHop(12323);
+    }
+
+    @Test
+    public void testGetIngredientsWithNoRequest() throws Exception {
+        GetIngredientsResult result = client.getIngredients(null);
+        assertTrue(result.getData().size() > 0);
+    }
+
+    @Test
+    public void testGetIngredients() throws Exception {
+        GetIngredientsRequest request = IngredientRequest.getIngredients().withPage(2).build();
+        GetIngredientsResult result = client.getIngredients(request);
+        assertTrue(result.getData().size() > 0);
+    }
+
+    @Test
+    public void testGetIngredient() throws Exception {
+        GetIngredientResult result = client.getIngredient(1);
+        assertEquals("Admiral", result.getData().getName());
+        assertEquals((Integer)1, result.getData().getId());
+    }
+
+    @Test
+    public void testGetIngredientWithNullId() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        client.getIngredient(null);
     }
 }

@@ -14,6 +14,7 @@ import com.brewerydb.api.request.brewery.GetBreweriesRequest;
 import com.brewerydb.api.request.brewery.GetBreweryRequest;
 import com.brewerydb.api.request.feature.GetFeaturesRequest;
 import com.brewerydb.api.request.hop.GetHopsRequest;
+import com.brewerydb.api.request.ingredient.GetIngredientsRequest;
 import com.brewerydb.api.result.hop.GetHopResult;
 import com.brewerydb.api.result.hop.GetHopsResult;
 import com.brewerydb.api.result.GetRandomBeerResult;
@@ -31,6 +32,8 @@ import com.brewerydb.api.result.feature.FeaturedResult;
 import com.brewerydb.api.result.feature.FeaturesResult;
 import com.brewerydb.api.result.glass.GetGlassResult;
 import com.brewerydb.api.result.glass.GetGlassesResult;
+import com.brewerydb.api.result.ingredient.GetIngredientResult;
+import com.brewerydb.api.result.ingredient.GetIngredientsResult;
 import com.brewerydb.api.result.style.GetStyleResult;
 import com.brewerydb.api.result.style.GetStylesResult;
 import com.google.gson.Gson;
@@ -508,6 +511,41 @@ public class BreweryDBClient {
             throw new IllegalArgumentException("ID parameter is required to retrieve a hop.");
         }
         return requestAsync(RequestMethod.GET, Configuration.HOP_ENDPOINT + "/" + id, null, GetHopResult.class);
+    }
+
+    /**
+     * Returns a list of {@link com.brewerydb.api.model.Ingredient Ingredients} by page.
+     * @param request The filter for this request.
+     * @return The {@link Result} containing the list of ingredients.
+     */
+    public GetIngredientsResult getIngredients(GetIngredientsRequest request) {
+        return waitFor(getIngredientsAsync(request));
+    }
+
+    /**
+     * The asynchronous version of {@link #getIngredient(Integer)}.
+     */
+    public Future<GetIngredientsResult> getIngredientsAsync(GetIngredientsRequest request) {
+        return requestAsync(RequestMethod.GET, Configuration.INGREDIENTS_ENDPOINT, request, GetIngredientsResult.class);
+    }
+
+    /**
+     * Retrieves an {@link com.brewerydb.api.model.Ingredient} by its ID.
+     * @param id The ID of the ingredient to retrieve.
+     * @return The {@link Result} with the ingredient.
+     */
+    public GetIngredientResult getIngredient(Integer id) {
+        return waitFor(getIngredientAsync(id));
+    }
+
+    /**
+     * The asynchronous version of {@link #getIngredient(Integer)}.
+     */
+    public Future<GetIngredientResult> getIngredientAsync(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID parameter is required to retrieve an ingredient.");
+        }
+        return requestAsync(RequestMethod.GET, Configuration.INGREDIENT_ENDPOINT + "/" + id, null, GetIngredientResult.class);
     }
 
     private enum RequestMethod {

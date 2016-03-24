@@ -11,13 +11,10 @@ public class Configuration {
     public static final String BEERS_ENDPOINT = API_ENDPOINT + "/beers";
     public static final String BEER_ENDPOINT = API_ENDPOINT + "/beer";
     public static final String RANDOM_BEER_ENDPOINT = BEER_ENDPOINT + "/random";
-
     public static final String BREWERIES_ENDPOINT = API_ENDPOINT + "/breweries";
     public static final String BREWERY_ENDPOINT = API_ENDPOINT + "/brewery";
-
     public static final String FEATURED_ENDPOINT = API_ENDPOINT + "/featured";
     public static final String FEATURES_ENDPOINT = API_ENDPOINT + "/features/";
-
     public static final String CATEGORIES_ENDPOINT = API_ENDPOINT + "/categories";
     public static final String CATEGORY_ENDPOINT = API_ENDPOINT + "/category";
     public static final String STYLES_ENDPOINT = API_ENDPOINT + "/styles";
@@ -26,4 +23,6 @@ public class Configuration {
     public static final String GLASS_ENDPOINT = API_ENDPOINT + "/glass";
     public static final String HOPS_ENDPOINT = API_ENDPOINT + "/hops";
     public static final String HOP_ENDPOINT = API_ENDPOINT + "/hop";
+    public static final String INGREDIENTS_ENDPOINT = API_ENDPOINT + "/ingredients";
+    public static final String INGREDIENT_ENDPOINT = API_ENDPOINT + "/ingredient";
 }
