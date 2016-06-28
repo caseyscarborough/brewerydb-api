@@ -17,7 +17,7 @@ import com.brewerydb.api.request.hop.GetHopsRequest;
 import com.brewerydb.api.request.ingredient.GetIngredientsRequest;
 import com.brewerydb.api.result.hop.GetHopResult;
 import com.brewerydb.api.result.hop.GetHopsResult;
-import com.brewerydb.api.result.GetRandomBeerResult;
+import com.brewerydb.api.result.beer.GetRandomBeerResult;
 import com.brewerydb.api.result.Result;
 import com.brewerydb.api.result.beer.AddBeerResult;
 import com.brewerydb.api.result.beer.DeleteBeerResult;
